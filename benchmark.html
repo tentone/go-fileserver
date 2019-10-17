@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script>
+        "use strict";
+
+        /**
+         * Static class with utils for benchmarking the resource server.
+         *
+         * @static
+         * @class Benchmark
+         */
+        function Benchmark(){}
+
+        Benchmark.url = "http:localhost:9090/";
+        Benchmark.categories = ["geometries", "materials", "shapes", "textures"];
+        Benchmark.format = "dat";
+        Benchmark.testData = null;
+
+        Benchmark.recursive = function(requests, size, index)
+        {
+            console.log("GoDonkey: " + requests[index] + " " + (size[index] / 1e6) + "MB requests");
+
+            Benchmark.data(requests[index], size[index], true);
+            Benchmark.send(function(delta)
+            {
+                console.log("   - Upload took " + delta + "ms.");
+                Benchmark.fetch(function(delta)
+                {
+                    console.log("   - Download took " + delta + "ms.");
+
+                    index++;
+                    if(index < requests.length && index < size.length)
+                    {
+                        Benchmark.recursive(requests, size, index);
+                    }
+                }, true);
+            }, true);
+        };
+
+        /**
+         * Run the benchmark with a default configuration.
+         *
+         * @method run
+         */
+        Benchmark.run = function()
+        {
+            Benchmark.recursive([3000, 1000, 500, 500, 200, 20], [1e2, 1e3, 1e4, 1e5, 1e6, 1e8], 0);
+        }
+
+        /**
+         * Generate data for the benchmark.
+         *
+         * @static
+         * @method data
+         * @param {Number} requests Number of requests to generate.
+         * @param {Number} Size Size of each request in bytes. 1MB its 1e6.
+         * @param {Boolean} silent If silent is set true, the benchmark does not log into the console.
+         */
+        Benchmark.data = function(requests, size, silent)
+        {
+            var requests = requests !== undefined ? requests : 1000;
+            var size = size !== undefined ? size : 1e3; //1Kb
+            var block = 64 / 8; //64bit == 8bytes
+
+            if(silent !== true)
+            {
+                console.log("GoDonkey: Generating benchmark data, requests:" + requests + ", fileSize:" + (size/1e6) + "MB");
+            }
+
+            var benchmarkData = [];
+            var length = size / block;
+
+            for(var j = 0; j < requests; j++)
+            {
+                //Generate random file
+                var data = new Float64Array(length);
+                for(var i = 0; i < length; i++)
+                {
+                    data[i] = Math.random() * Number.MAX_SAFE_INTEGER;
+                }
+                var file = new File([new Blob([data])], "f");
+
+                //New entry
+                benchmarkData.push(
+                    {
+                        file: file,
+                        uuid: THREE.Math.generateUUID(),
+                        library: Benchmark.categories[Math.floor(Math.random() * Benchmark.categories.length)]
+                    })
+            }
+
+            Benchmark.testData = benchmarkData;
+        };
+
+        /**
+         * Send dummy resources to the server.
+         *
+         * If no data was generated new data will be generted before running the benchmark.
+         *
+         * Calls the service POST /upload and sends a multipart-formdata with uuid(UUID), library and file parameters.
+         *
+         * @static
+         * @method send
+         * @param {Function} onFinish Function called when the benchmark finishes, receives delta as parameter.
+         * @param {Boolean} silent If silent is set true, the benchmark does not log into the console.
+         */
+        Benchmark.send = function(onFinish, silent)
+        {
+            if(Benchmark.testData === null)
+            {
+                Benchmark.data();
+            }
+
+            if(silent !== true)
+            {
+                console.log("GoDonkey: Upload benchmark starting");
+            }
+
+            var data = Benchmark.testData;
+            var length = data.length;
+            var counter = 0;
+            var failed = 0;
+            var url = Benchmark.url + "v1/resource/upload";
+
+            if(silent !== true)
+            {
+                console.log("GoDonkey: Preparing requests");
+            }
+
+            var xhrs = new Array(length);
+
+            for(var i = 0; i < length; i++)
+            {
+                var form = new FormData();
+                form.append("uuid", data[i].uuid);
+                form.append("library", data[i].library);
+                form.append("file", data[i].file);
+                form.append("format", Benchmark.format);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", url, true);
+                xhr.onload = function(event)
+                {
+                    counter++;
+
+                    if(counter === length)
+                    {
+                        var delta = performance.now() - time;
+
+                        if(onFinish !== undefined)
+                        {
+                            onFinish(delta);
+                        }
+
+                        if(silent !== true)
+                        {
+                            console.log("GoDonkey: Benchmark finished , took " + delta + "ms. " + failed + " requests failed.");
+                        }
+                    }
+                };
+                xhr.onerror = function(event)
+                {
+                    failed++;
+                    xhr.onload();
+                };
+
+                xhrs[i] = {xhr:xhr, form:form};
+            }
+
+            if(silent !== true)
+            {
+                console.log("GoDonkey: Running requests");
+            }
+
+            var time = performance.now();
+            for(var i = 0; i < length; i++)
+            {
+                xhrs[i].xhr.send(xhrs[i].form);
+            }
+        };
+
+        /**
+         * Request data from the server.
+         *
+         * Calls the service GET /scene/scene(UUID)/library/uuid
+         *
+         * @static
+         * @method fetch
+         * @param {Function} onFinish Function called when the benchmark finishes, receives delta as parameter.
+         * @param {Boolean} silent If silent is set true, the benchmark does not log into the console.
+         */
+        Benchmark.fetch = function(onFinish, silent)
+        {
+            if(silent !== true)
+            {
+                console.log("GoDonkey: Download benchmark starting");
+            }
+
+            var data = Benchmark.testData;
+            var length = data.length;
+            var counter = 0;
+            var failed = 0;
+
+            if(silent !== true)
+            {
+                console.log("GoDonkey: Preparing requests");
+            }
+
+            var xhrs = new Array(length);
+
+            for(var i = 0; i < length; i++)
+            {
+                var url = Benchmark.url + "v1/resource/get/" + data[i].library + "/" + data[i].uuid + "." + Benchmark.format;
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", url);
+                xhr.onload = function(event)
+                {
+                    counter++;
+
+                    if(counter === length)
+                    {
+                        var delta = performance.now() - time;
+
+                        if(onFinish !== undefined)
+                        {
+                            onFinish(delta);
+                        }
+
+                        if(silent !== true)
+                        {
+                            console.log("GoDonkey: Benchmark finished , took " + delta + "ms. " + failed + " requests failed.");
+                        }
+                    }
+                };
+                xhr.onerror = function(event)
+                {
+                    failed++;
+                    xhr.onload();
+                };
+
+                xhrs[i] = xhr;
+            }
+
+            if(silent !== true)
+            {
+                console.log("GoDonkey: Running requests");
+            }
+
+            var time = performance.now();
+            for(var i = 0; i < length; i++)
+            {
+                xhrs[i].send(null);
+            }
+        };
+    </script>
+</body>
+</html>

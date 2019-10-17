@@ -35,7 +35,7 @@ func main() {
 		logger.Fatalf("Failed to open log file.")
 	}
 
-	logger.Init("Resources", global.DevelopmentMode, false, file)
+	logger.Init("GoDonkey", global.DevelopmentMode, false, file)
 
 	// Read server configuration
 	global.LoadConfig()
@@ -137,7 +137,6 @@ func main() {
 // CORS handler middleware.
 // Sets the context response access-control headers.
 func HandleCORS(handler fasthttp.RequestHandler) fasthttp.RequestHandler {
-
 	return fasthttp.RequestHandler(func(ctx *fasthttp.RequestCtx) {
 
 		ctx.Response.Header.Set("Access-Control-Allow-Credentials", "true")
