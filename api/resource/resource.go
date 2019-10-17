@@ -8,8 +8,6 @@ import (
 	"strings"
 )
 
-// swagger:route GET /v1/resource/get/uuid.format Resources getResource
-//
 // Generic method to retrieve a resource from the server. Has to used lower case UUID. Used for high bandwidth requests.
 // Receives the library and UUID of the resource in the URL.
 // The path of the service corresponds directly to the path of the file stored in the server.
@@ -33,8 +31,6 @@ func Get(ctx *fasthttp.RequestCtx) {
 	fasthttp.ServeFile(ctx, str)
 }
 
-// swagger:route POST /v1/resource/upload Resources uploadResource
-//
 // Generic resource upload service, that allows the user to specify the UUID of the resource.
 // This method should be avoided as much as possible, it does not handle any resource class specific operations (data conversions, compression etc).
 // Payload is a multipart-form containing the "file" data, "uuid" and "library" of the resource.
