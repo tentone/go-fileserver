@@ -3,7 +3,7 @@
 	"addressTLS": "",
 	"certFileTLS": "",
 	"keyFileTLS": "",
-	"dataPath": "./data/",
+	"dataPath": "data/",
 	"sqliteDatabase": "./database.db",
 	"developmentMode": true
 }

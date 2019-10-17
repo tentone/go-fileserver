@@ -1,4 +1,0 @@
-INFO : 2019/10/17 09:58:33.999537 global.go:135: Configuration loaded from config/dev.json(Address::9090, DataPath:./data/, APIServer:)
-INFO : 2019/10/17 09:58:34.025441 main.go:48: Starting HTTP server on ":9090"
-INFO : 2019/10/17 10:14:58.534038 global.go:135: Configuration loaded from config/dev.json(Address::9090, DataPath:./data/, APIServer:)
-INFO : 2019/10/17 10:14:58.534038 main.go:46: Starting HTTP server on ":9090"

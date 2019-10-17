@@ -2,7 +2,7 @@ package resource
 
 import (
 	"github.com/valyala/fasthttp"
-	utils2 "godonkey/api/utils"
+	"godonkey/api/utils"
 	"godonkey/global"
 	"os"
 	"strings"
@@ -40,72 +40,75 @@ func Upload(ctx *fasthttp.RequestCtx) {
 	var file, err = ctx.FormFile("file")
 	if err != nil {
 
-		utils2.SetErrorResponse(ctx, "No file provided in the form, check the file data.", fasthttp.StatusBadRequest, err)
+		utils.SetErrorResponse(ctx, "No file provided in the form, check the file data.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	var uuid = strings.ToLower(string(ctx.FormValue("uuid")))
 	if len(uuid) == 0 {
 
-		utils2.SetErrorResponse(ctx, "UUID is empty or missing.", fasthttp.StatusBadRequest, err)
+		utils.SetErrorResponse(ctx, "UUID is empty or missing.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	var library = strings.ToLower(string(ctx.FormValue("library")))
 	if len(library) == 0 {
 
-		utils2.SetErrorResponse(ctx, "Library is empty or missing (e.g image, file).", fasthttp.StatusBadRequest, err)
+		utils.SetErrorResponse(ctx, "Library is empty or missing (e.g image, file).", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	var format = strings.ToLower(string(ctx.FormValue("format")))
 	if len(format) == 0 {
 
-		utils2.SetErrorResponse(ctx, "File format is empty or missing.", fasthttp.StatusBadRequest, err)
+		utils.SetErrorResponse(ctx, "File format is empty or missing.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	// Make directory
-	err = os.MkdirAll(global.DataPath+ library, os.ModePerm)
+	err = os.MkdirAll(global.DataPath + library, os.ModePerm)
 	if err != nil {
 
-		utils2.SetErrorResponse(ctx, "Failed to create directory, check the server configuration.", fasthttp.StatusInternalServerError, err)
+		utils.SetErrorResponse(ctx, "Failed to create directory, check the server configuration.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
-	var path string = global.DataPath + library + "/" + uuid
+	var path string = global.DataPath + library + "/" + uuid + "." + format
 
 	// Save file to the respective folder
 	err = fasthttp.SaveMultipartFile(file, path)
 	if err != nil {
 
-		utils2.SetErrorResponse(ctx, "Failed to store file, check the file data.", fasthttp.StatusBadRequest, err)
+		utils.SetErrorResponse(ctx, "Failed to store file, check the file data.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 
-		utils2.SetErrorResponse(ctx, "File not created, check the file data.", fasthttp.StatusInternalServerError, err)
+		utils.SetErrorResponse(ctx, "File not created, check the file data.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
 	ctx.Response.SetStatusCode(fasthttp.StatusOK)
 }
 
+// Generic method to delete a resource from the server using its uuid and library name.
+// The files in the data path will be deleted and cannot be recovered.
 func Delete(ctx *fasthttp.RequestCtx) {
 
 	var uuid = string(ctx.FormValue("uuid"))
 	var library = string(ctx.FormValue("library"))
-	var fname = global.DataPath + library + "/" + uuid
+	var format = string(ctx.FormValue("format"))
+
+	var fname = global.DataPath + library + "/" + uuid + "." + format
 
 	// Check if the file exists
 	var _, err = os.Stat(fname)
 	if err != nil && os.IsNotExist(err) {
-
 		// Remove file
 		err = os.Remove(fname)
 		if err != nil {
-			utils2.SetErrorResponse(ctx, "Failed to delete the file, may not exist.", fasthttp.StatusInternalServerError, err)
+			utils.SetErrorResponse(ctx, "Failed to delete the file, may not exist.", fasthttp.StatusInternalServerError, err)
 			return
 		}
 	}

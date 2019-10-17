@@ -3,7 +3,7 @@ package api
 import (
 	"encoding/json"
 	"github.com/valyala/fasthttp"
-	utils2 "godonkey/api/utils"
+	"godonkey/api/utils"
 	"godonkey/global"
 )
 
@@ -31,7 +31,7 @@ func Version(ctx *fasthttp.RequestCtx) {
 	var data, err = json.Marshal(&response)
 	if err != nil {
 
-		utils2.SetErrorResponse(ctx, "Error creating JSON response.", fasthttp.StatusInternalServerError, err)
+		utils.SetErrorResponse(ctx, "Error creating JSON response.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
