@@ -2,10 +2,10 @@ package api
 
 import (
 	"github.com/buaazp/fasthttprouter"
-	"go-donkey/api/file"
-	"go-donkey/api/image"
-	"go-donkey/api/resource"
-	"go-donkey/global"
+	"godonkey/api/file"
+	"godonkey/api/image"
+	"godonkey/api/resource"
+	"godonkey/global"
 )
 
 // Create all the routes for service access using fast http router.

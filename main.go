@@ -12,9 +12,9 @@ import (
 	"math/big"
 	"os"
 	"time"
-	"go-donkey/api"
-	"go-donkey/database"
-	"go-donkey/global"
+	"godonkey/api"
+	"godonkey/database"
+	"godonkey/global"
 )
 
 func main() {

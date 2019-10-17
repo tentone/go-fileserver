@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"github.com/google/logger"
 	_ "github.com/mattn/go-sqlite3"
-	"go-donkey/global"
+	"godonkey/global"
 )
 
 var database *sql.DB

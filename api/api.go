@@ -3,8 +3,8 @@ package api
 import (
 	"encoding/json"
 	"github.com/valyala/fasthttp"
-	"go-donkey/global"
-	"go-donkey/utils"
+	"godonkey/global"
+	"godonkey/utils"
 )
 
 func SystemLog(ctx *fasthttp.RequestCtx) {

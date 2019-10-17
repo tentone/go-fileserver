@@ -125,13 +125,10 @@ func LoadConfig() {
 	}
 
 	Address = result.Address
-
 	AddressTLS = result.AddressTLS
 	CertFileTLS = result.CertFileTLS
 	KeyFileTLS = result.KeyFileTLS
-
 	DataPath = result.DataPath
-	ApiServer = result.ApiServer
 	SqliteDatabase = result.SqliteDatabase
 	DevelopmentMode = result.DevelopmentMode
 

@@ -9,9 +9,9 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
-	"go-donkey/database"
-	"go-donkey/global"
-	"go-donkey/utils"
+	"godonkey/database"
+	"godonkey/global"
+	"godonkey/utils"
 )
 
 func Get(ctx *fasthttp.RequestCtx) {
