@@ -9,12 +9,11 @@ import (
 	"github.com/buaazp/fasthttprouter"
 	"github.com/google/logger"
 	"github.com/valyala/fasthttp"
+	"godonkey/api"
+	"godonkey/global"
 	"math/big"
 	"os"
 	"time"
-	"godonkey/api"
-	"godonkey/database"
-	"godonkey/global"
 )
 
 func main() {
@@ -40,7 +39,6 @@ func main() {
 
 	// Read server configuration
 	global.LoadConfig()
-	database.Load()
 
 	// Start HTTP server.
 	if len(global.Address) > 0 {

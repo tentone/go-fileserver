@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/valyala/fasthttp"
+	utils2 "godonkey/api/utils"
+	"godonkey/global"
 	"os"
 	"strings"
-	"godonkey/database"
-	"godonkey/global"
-	"godonkey/utils"
 )
 
 func Get(ctx *fasthttp.RequestCtx) {
@@ -25,21 +24,21 @@ func Upload(ctx *fasthttp.RequestCtx) {
 	var file, err = ctx.FormFile("file")
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "No file provided in the form, check the file data.", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "No file provided in the form, check the file data.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	var format = string(ctx.FormValue("format"))
 	if len(format) == 0 {
 
-		utils.SetErrorResponse(ctx, "File format is empty or missing.", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "File format is empty or missing.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	//Generate UUID
 	var randomUuid, _ = uuid.NewRandom()
-	var uuid string = randomUuid.String()
-	var fname string = uuid + "." + format
+	var u string = randomUuid.String()
+	var fname string = u + "." + format
 
 	// Make directory
 	err = os.MkdirAll(global.DataPath + global.FILES, os.ModePerm)
@@ -68,20 +67,17 @@ func Upload(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	database.InsertResource(global.FILES, uuid, format, fname)
-
 	var response = struct {
-
 		UUID string `json:"uuid"`
 	}{}
-	response.UUID = uuid
+	response.UUID = u
 
 	var data []byte
 
 	data, err = json.Marshal(&response)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Error creating JSON response.", fasthttp.StatusInternalServerError, err)
+		utils2.SetErrorResponse(ctx, "Error creating JSON response.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
@@ -93,8 +89,8 @@ func Upload(ctx *fasthttp.RequestCtx) {
 
 func Delete(ctx *fasthttp.RequestCtx) {
 
-	var uuid = string(ctx.FormValue("uuid"))
-	var fname = global.DataPath + global.FILES + "/" + uuid
+	var u = string(ctx.FormValue("uuid"))
+	var fname = global.DataPath + global.FILES + "/" + u
 
 	// Check if the file exists
 	var _, err = os.Stat(fname)
@@ -104,10 +100,8 @@ func Delete(ctx *fasthttp.RequestCtx) {
 		err = os.Remove(fname)
 		if err != nil {
 
-			utils.SetErrorResponse(ctx, "Failed to delete the file, may not exist.", fasthttp.StatusInternalServerError, err)
+			utils2.SetErrorResponse(ctx, "Failed to delete the file, may not exist.", fasthttp.StatusInternalServerError, err)
 			return
 		}
 	}
-
-	database.RemoveResource(global.FILES, uuid)
 }

@@ -3,8 +3,6 @@
 	"addressTLS": "",
 	"certFileTLS": "",
 	"keyFileTLS": "",
-	"apiServer": "http://urano.eqs.local:8083/",
-
 	"dataPath": "./data/",
 	"sqliteDatabase": "./database.db",
 	"developmentMode": true

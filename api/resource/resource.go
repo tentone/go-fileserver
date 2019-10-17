@@ -2,13 +2,17 @@ package resource
 
 import (
 	"github.com/valyala/fasthttp"
+	utils2 "godonkey/api/utils"
+	"godonkey/global"
 	"os"
 	"strings"
-	"godonkey/database"
-	"godonkey/global"
-	"godonkey/utils"
 )
 
+// swagger:route GET /v1/resource/get/uuid.format Resources getResource
+//
+// Generic method to retrieve a resource from the server. Has to used lower case UUID. Used for high bandwidth requests.
+// Receives the library and UUID of the resource in the URL.
+// The path of the service corresponds directly to the path of the file stored in the server.
 func Get(ctx *fasthttp.RequestCtx) {
 	var path = string(ctx.Path())
 	var paths = strings.Split(path, "/")
@@ -29,34 +33,39 @@ func Get(ctx *fasthttp.RequestCtx) {
 	fasthttp.ServeFile(ctx, str)
 }
 
+// swagger:route POST /v1/resource/upload Resources uploadResource
+//
+// Generic resource upload service, that allows the user to specify the UUID of the resource.
+// This method should be avoided as much as possible, it does not handle any resource class specific operations (data conversions, compression etc).
+// Payload is a multipart-form containing the "file" data, "uuid" and "library" of the resource.
 func Upload(ctx *fasthttp.RequestCtx) {
 
 	// Read form data
 	var file, err = ctx.FormFile("file")
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "No file provided in the form, check the file data.", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "No file provided in the form, check the file data.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	var uuid = strings.ToLower(string(ctx.FormValue("uuid")))
 	if len(uuid) == 0 {
 
-		utils.SetErrorResponse(ctx, "UUID is empty or missing.", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "UUID is empty or missing.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	var library = strings.ToLower(string(ctx.FormValue("library")))
 	if len(library) == 0 {
 
-		utils.SetErrorResponse(ctx, "Library is empty or missing (e.g image, file).", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "Library is empty or missing (e.g image, file).", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	var format = strings.ToLower(string(ctx.FormValue("format")))
 	if len(format) == 0 {
 
-		utils.SetErrorResponse(ctx, "File format is empty or missing.", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "File format is empty or missing.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
@@ -64,7 +73,7 @@ func Upload(ctx *fasthttp.RequestCtx) {
 	err = os.MkdirAll(global.DataPath+ library, os.ModePerm)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Failed to create directory, check the server configuration.", fasthttp.StatusInternalServerError, err)
+		utils2.SetErrorResponse(ctx, "Failed to create directory, check the server configuration.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
@@ -74,17 +83,16 @@ func Upload(ctx *fasthttp.RequestCtx) {
 	err = fasthttp.SaveMultipartFile(file, path)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Failed to store file, check the file data.", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "Failed to store file, check the file data.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 
-		utils.SetErrorResponse(ctx, "File not created, check the file data.", fasthttp.StatusInternalServerError, err)
+		utils2.SetErrorResponse(ctx, "File not created, check the file data.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
-	database.InsertResource(library, uuid, format, uuid)
 	ctx.Response.SetStatusCode(fasthttp.StatusOK)
 }
 
@@ -101,11 +109,10 @@ func Delete(ctx *fasthttp.RequestCtx) {
 		// Remove file
 		err = os.Remove(fname)
 		if err != nil {
-			utils.SetErrorResponse(ctx, "Failed to delete the file, may not exist.", fasthttp.StatusInternalServerError, err)
+			utils2.SetErrorResponse(ctx, "Failed to delete the file, may not exist.", fasthttp.StatusInternalServerError, err)
 			return
 		}
 	}
 
-	database.RemoveResource(library, uuid)
 	ctx.Response.SetStatusCode(fasthttp.StatusOK)
 }

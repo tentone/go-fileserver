@@ -6,12 +6,11 @@ import (
 	"github.com/google/logger"
 	"github.com/google/uuid"
 	"github.com/valyala/fasthttp"
+	utils2 "godonkey/api/utils"
+	"godonkey/global"
 	"io/ioutil"
 	"os"
 	"strings"
-	"godonkey/database"
-	"godonkey/global"
-	"godonkey/utils"
 )
 
 func Get(ctx *fasthttp.RequestCtx) {
@@ -27,7 +26,7 @@ func Upload(ctx *fasthttp.RequestCtx) {
 	var file, err = ctx.FormFile("file")
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "No file provided in the form, check the file data.", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "No file provided in the form, check the file data.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
@@ -35,7 +34,7 @@ func Upload(ctx *fasthttp.RequestCtx) {
 
 	if len(format) == 0 {
 
-		utils.SetErrorResponse(ctx, "File format is empty or missing.", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "File format is empty or missing.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
@@ -50,7 +49,7 @@ func Upload(ctx *fasthttp.RequestCtx) {
 	err = os.MkdirAll(global.DataPath+ global.IMAGES, os.ModePerm)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Failed to create directory, check the server configuration.", fasthttp.StatusInternalServerError, err)
+		utils2.SetErrorResponse(ctx, "Failed to create directory, check the server configuration.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
@@ -60,17 +59,15 @@ func Upload(ctx *fasthttp.RequestCtx) {
 	err = fasthttp.SaveMultipartFile(file, path)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Failed to store file, check the file data.", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "Failed to store file, check the file data.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 
-		utils.SetErrorResponse(ctx, "File not created, check the file data.", fasthttp.StatusInternalServerError, err)
+		utils2.SetErrorResponse(ctx, "File not created, check the file data.", fasthttp.StatusInternalServerError, err)
 		return
 	}
-
-	database.InsertResource(global.IMAGES, uuid, format, fname)
 
 	var response = struct {
 
@@ -83,7 +80,7 @@ func Upload(ctx *fasthttp.RequestCtx) {
 	data, err = json.Marshal(&response)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Error creating JSON response.", fasthttp.StatusInternalServerError, err)
+		utils2.SetErrorResponse(ctx, "Error creating JSON response.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
@@ -103,7 +100,7 @@ func UploadBase64(ctx *fasthttp.RequestCtx) {
 	var err = json.Unmarshal(ctx.PostBody(), &received)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Error parsing JSON data received.", fasthttp.StatusBadRequest, err)
+		utils2.SetErrorResponse(ctx, "Error parsing JSON data received.", fasthttp.StatusBadRequest, err)
 		return
 	}
 
@@ -117,7 +114,7 @@ func UploadBase64(ctx *fasthttp.RequestCtx) {
 	data, err = base64.StdEncoding.DecodeString(received.File)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Failed to decode base64 data.", fasthttp.StatusInternalServerError, err)
+		utils2.SetErrorResponse(ctx, "Failed to decode base64 data.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
@@ -126,7 +123,7 @@ func UploadBase64(ctx *fasthttp.RequestCtx) {
 	err = os.MkdirAll(global.DataPath+ global.IMAGES, os.ModePerm)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Failed to create directory.", fasthttp.StatusInternalServerError, err)
+		utils2.SetErrorResponse(ctx, "Failed to create directory.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
@@ -134,11 +131,9 @@ func UploadBase64(ctx *fasthttp.RequestCtx) {
 	err = ioutil.WriteFile(path, data, 0644)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Failed to write file to the server.", fasthttp.StatusInternalServerError, err)
+		utils2.SetErrorResponse(ctx, "Failed to write file to the server.", fasthttp.StatusInternalServerError, err)
 		return
 	}
-
-	database.InsertResource(global.IMAGES, uuid, format, uuid)
 
 	var response = struct {
 
@@ -150,7 +145,7 @@ func UploadBase64(ctx *fasthttp.RequestCtx) {
 	dataResponse, err = json.Marshal(&response)
 	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Error creating JSON response.", fasthttp.StatusInternalServerError, err)
+		utils2.SetErrorResponse(ctx, "Error creating JSON response.", fasthttp.StatusInternalServerError, err)
 		return
 	}
 
