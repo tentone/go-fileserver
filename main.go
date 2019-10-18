@@ -11,12 +11,38 @@ import (
 	"github.com/valyala/fasthttp"
 	"godonkey/api"
 	"godonkey/global"
+	"log"
 	"math/big"
+	"net/http"
 	"os"
 	"time"
 )
 
 func main() {
+	var server http.Server
+	server = http.Server{Addr: ":9090", Handler: http.HandlerFunc(handle)}
+
+	var cert, privateKey []byte
+	var err error
+	cert, privateKey, err = GenerateCertificate("localhost", "unodigital")
+	if err != nil {
+		log.Fatal("Failed to generate certificate file.")
+		return
+	}
+
+	// Start the server with TLS, since we are running HTTP/2 it must be run with TLS.
+	log.Printf("Serving on https://0.0.0.0:8000")
+	//log.Fatal(server.ListenAndServeTLS(cert, privateKey))
+}
+
+func handle(w http.ResponseWriter, r *http.Request) {
+	// Log the request protocol
+	log.Printf("Got connection: %s", r.Proto)
+	// Send a message back to the client
+	_, _ = w.Write([]byte("Hello"))
+}
+
+func maina() {
 
 	global.LoadVersion()
 
