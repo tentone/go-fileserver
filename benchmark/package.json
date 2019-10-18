@@ -1,0 +1,13 @@
+{
+  "main": "benchmark.html",
+  "name": "benchmark",
+  "description": "File server benchmark app",
+  "version": "0.0.0",
+  "keywords": [],
+  "window": {
+    "show": true,
+    "title": "Benchmark",
+    "width": 10,
+    "height": 10
+  }
+}
