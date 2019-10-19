@@ -90,6 +90,7 @@ func main() {
 func handle(w http.ResponseWriter, r *http.Request) {
 	// Log the request protocol
 	log.Printf("Got connection: %s", r.Proto)
+	
 	// Send a message back to the client
 	_, _ = w.Write([]byte("Hello"))
 }
