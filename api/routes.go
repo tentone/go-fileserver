@@ -2,9 +2,9 @@ package api
 
 import (
 	"github.com/buaazp/fasthttprouter"
-	"godonkey/api/api"
-	"godonkey/api/resource"
-	"godonkey/global"
+	"github.com/tentone/godonkey/api/api"
+	"github.com/tentone/godonkey/api/resource"
+	"github.com/tentone/godonkey/global"
 )
 
 // Create all the routes for service access using fast http router.
