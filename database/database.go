@@ -3,20 +3,12 @@ package database
 import (
 	"database/sql"
 	"github.com/google/logger"
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/mattn/go-sqlite3"
 	"godonkey/global"
 )
 
-
-/*
-func main() {
-	var database *sql.DB
-	db, err := gorm.Open("sqlite3", "/tmp/gorm.db")
-	defer db.Close()
-}
-*/
+var database *sql.DB
 
 // Load SQLite database file, and try to create the data structure if it is not present.
 //

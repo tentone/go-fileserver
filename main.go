@@ -49,10 +49,8 @@ func ListenAndServeTLS(srv *http.Server, certPEMBlock, keyPEMBlock []byte) error
 	return srv.Serve(tlsListener)
 }
 
-// tcpKeepAliveListener sets TCP keep-alive timeouts on accepted
-// connections. It's used by ListenAndServe and ListenAndServeTLS so
-// dead TCP connections (e.g. closing laptop mid-download) eventually
-// go away.
+// tcpKeepAliveListener sets TCP keep-alive timeouts on accepted connections.
+// It's used by ListenAndServe and ListenAndServeTLS so dead TCP connections (e.g. closing laptop mid-download) eventually go away.
 type tcpKeepAliveListener struct {
 	*net.TCPListener
 }
