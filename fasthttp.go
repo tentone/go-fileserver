@@ -1,32 +1,16 @@
 package main
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
-	"crypto/x509/pkix"
-	"encoding/pem"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/google/logger"
 	"github.com/tentone/godonkey/api"
 	"github.com/tentone/godonkey/global"
 	"github.com/valyala/fasthttp"
-	"log"
-	"math/big"
-	"net/http"
 	"os"
 	"time"
 )
 
-func handle(w http.ResponseWriter, r *http.Request) {
-	// Log the request protocol
-	log.Printf("Got connection: %s", r.Proto)
-	
-	// Send a message back to the client
-	_, _ = w.Write([]byte("Hello"))
-}
-
-func main() {
+func maina() {
 
 	global.LoadVersion()
 
@@ -117,7 +101,7 @@ func main() {
 			}
 
 			if len(global.CertFileTLS) == 0 || len(global.KeyFileTLS) == 0 {
-				var certData, keyCertData, err = GenerateCertificate("resources.unodigital.io", "UNO Digital")
+				/*var certData, keyCertData, err = GenerateCertificate("resources.unodigital.io", "UNO Digital")
 				if err != nil {
 					logger.Error("Error generating certificate." + err.Error())
 				}
@@ -128,7 +112,7 @@ func main() {
 					logger.Error("Error starting HTTPS server." + err.Error())
 				} else {
 					logger.Info("Server HTTPS started and listing at %s.", global.AddressTLS)
-				}
+				}*/
 			} else {
 				var err = http.ListenAndServeTLS(global.AddressTLS, global.CertFileTLS, global.KeyFileTLS)
 
@@ -156,59 +140,4 @@ func HandleCORS(handler fasthttp.RequestHandler) fasthttp.RequestHandler {
 
 		handler(ctx)
 	})
-}
-
-/// Generate a TLS certificate from host name.
-///
-/// Should only be used for localhost testing and development purposes.
-///
-/// Returns Certificate data, Private key data and error if any occurred.
-func GenerateCertificate(host string, organization string) ([]byte, []byte, error) {
-
-	priv, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)
-	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	cert := &x509.Certificate{
-		SerialNumber: serialNumber,
-		Subject: pkix.Name{
-			Organization: []string{organization},
-		},
-		NotBefore: time.Now(),
-		NotAfter: time.Now().Add(365 * 24 * time.Hour),
-		KeyUsage: x509.KeyUsageCertSign | x509.KeyUsageDigitalSignature,
-		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
-		SignatureAlgorithm: x509.SHA256WithRSA,
-		DNSNames: []string{host},
-		BasicConstraintsValid: true,
-		IsCA: true,
-	}
-
-	certBytes, err := x509.CreateCertificate(
-		rand.Reader, cert, cert, &priv.PublicKey, priv,
-	)
-
-	p := pem.EncodeToMemory(
-		&pem.Block{
-			Type: "PRIVATE KEY",
-			Bytes: x509.MarshalPKCS1PrivateKey(priv),
-		},
-	)
-
-	b := pem.EncodeToMemory(
-		&pem.Block{
-			Type: "CERTIFICATE",
-			Bytes: certBytes,
-		},
-	)
-
-	return b, p, err
 }
