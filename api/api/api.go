@@ -2,9 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/valyala/fasthttp"
 	"github.com/tentone/godonkey/api/utils"
 	"github.com/tentone/godonkey/global"
+	"github.com/valyala/fasthttp"
 )
 
 // Get the server log, this API method is only reachable when running in development environment.

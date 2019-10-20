@@ -1,9 +1,9 @@
 package resource
 
 import (
-	"github.com/valyala/fasthttp"
 	"github.com/tentone/godonkey/api/utils"
 	"github.com/tentone/godonkey/global"
+	"github.com/valyala/fasthttp"
 	"os"
 	"strings"
 )

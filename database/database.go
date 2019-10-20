@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"github.com/google/logger"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/tentone/godonkey/global"
 )
