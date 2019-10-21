@@ -90,11 +90,11 @@ func Create() *mux.Router {
 	return router
 }
 
-func ResourceGet(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/octet-stream; charset=UTF-8")
+func ResourceGet(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/octet-stream; charset=UTF-8")
 
 	// Form data
-	var variables = mux.Vars(r)
+	var variables = mux.Vars(request)
 	var uuid string = variables["uuid"]
 	var library string = variables["library"]
 	var fileLocation string = filepath.Join(DATA_PATH, library, uuid)
@@ -105,24 +105,26 @@ func ResourceGet(w http.ResponseWriter, r *http.Request) {
 	file, err = ioutil.ReadFile(fileLocation)
 
 	if err != nil {
-		w.WriteHeader(500)
+		writer.WriteHeader(500)
 		return
 	}
 
-	w.WriteHeader(200)
-	_, _ = w.Write(file)
+	writer.WriteHeader(200)
+	_, _ = writer.Write(file)
 }
 
-func ResourceUpload(w http.ResponseWriter, r *http.Request) {
-	var uuid = r.FormValue("uuid")
-	var library = r.FormValue("library")
+func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
+	var uuid = request.FormValue("uuid")
+	var library = request.FormValue("library")
 
 	var fileLocation = filepath.Join(DATA_PATH, strings.ToLower(library), uuid)
 
-	r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
+	request.Body = http.MaxBytesReader(writer, request.Body, MAX_UPLOAD_SIZE)
 
-	if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
-		w.WriteHeader(500)
+	var err error
+	err = request.ParseMultipartForm(MAX_UPLOAD_SIZE);
+	if err != nil {
+		writer.WriteHeader(500)
 		return
 	}
 
@@ -133,9 +135,9 @@ func ResourceUpload(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	file, _, err := r.FormFile("file")
+	file, _, err := request.FormFile("file")
 	if err != nil {
-		w.WriteHeader(500)
+		writer.WriteHeader(500)
 		return
 	}
 
@@ -143,20 +145,20 @@ func ResourceUpload(w http.ResponseWriter, r *http.Request) {
 
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		w.WriteHeader(500)
+		writer.WriteHeader(500)
 		return
 	}
 
 	newFile, err := os.Create(fileLocation)
 	if err != nil {
-		w.WriteHeader(500)
+		writer.WriteHeader(500)
 		return
 	}
 
 	defer newFile.Close()
 
 	if _, err := newFile.Write(fileBytes); err != nil {
-		w.WriteHeader(500)
+		writer.WriteHeader(500)
 		return
 	}
 }
