@@ -1,0 +1,101 @@
+-------------------- HTTP 2.0 --------------------
+3000 0.0001MB requests
+- Upload took 3365.7000000821427ms.
+- Download took 2607.899999944493ms.
+1000 0.001MB requests
+- Upload took 1111.9999999646097ms.
+- Download took 1102.199999964796ms.
+500 0.01MB requests
+- Upload took 648.9999999757856ms.
+- Download took 743.0000000167638ms.
+500 0.1MB requests
+- Upload took 1172.7999999420717ms.
+- Download took 2054.8000000417233ms.
+200 1MB requests
+- Upload took 3108.8000000454485ms.
+- Download took 5980.900000082329ms.
+20 100MB requests
+- Upload took 33669.70000008587ms.
+- Download took 24037.499999976717ms.
+
+-------------------- FASTHTTP --------------------
+3000 0.0001MB requests
+- Upload took 3366.299999994226ms.
+- Download took 3445.3999999677762ms.
+1000 0.001MB requests
+- Upload took 1167.699999990873ms.
+- Download took 1174.4000000180677ms.
+500 0.01MB requests
+- Upload took 568.3999999891967ms.
+- Download took 709.9999999627471ms.
+500 0.1MB requests
+- Upload took 821.0999999428168ms.
+- Download took 4947.199999936856ms.
+200 1MB requests
+- Upload took 769.899999955669ms.
+- Download took 4309.000000008382ms.
+20 100MB requests
+- Upload took 5602.300000027753ms.
+- Download took 27055.60000007972ms.
+
+-------------------- Express --------------------
+3000 0.0001MB requests
+- Upload took 5119.200000073761ms.
+- Download took 3693.4999999357387ms.
+1000 0.001MB requests
+- Upload took 1561.5999998990446ms.
+- Download took 1248.0999999679625ms.
+500 0.01MB requests
+- Upload took 719.5000000065193ms.
+- Download took 707.0999999996275ms.
+500 0.1MB requests
+- Upload took 928.0999999027699ms.
+- Download took 4985.800000024028ms.
+200 1MB requests
+- Upload took 1293.599999975413ms.
+- Download took 4280.70000000298ms.
+20 100MB requests
+- Upload took 14433.90000006184ms.
+- Download took 26216.999999945983ms.
+
+-------------------- HTTP 2.0 (Fast 3G)--------------------
+200 0.0001MB requests
+- Upload took 4178.700000047684ms.
+- Download took 2158.199999947101ms.
+200 0.001MB requests
+- Upload took 7507.599999895319ms.
+- Download took 2888.9000000199303ms.
+20 0.01MB requests
+- Upload took 3346.199999912642ms.
+- Download took 1731.499999994412ms.
+20 0.1MB requests
+- Upload took 24169.700000085868ms.
+- Download took 11220.100000035018ms.
+
+-------------------- FASTHTTP (Fast 3G)--------------------
+200 0.0001MB requests
+- Upload took 19585.599999991246ms.
+- Download took 19467.499999911524ms.
+200 0.001MB requests
+- Upload took 20285.000000032596ms.
+- Download took 19448.399999993853ms.
+20 0.01MB requests
+- Upload took 4262.700000079349ms.
+- Download took 3050.1999999396503ms.
+20 0.1MB requests
+- Upload took 24925.99999997765ms.
+- Download took 12491.800000076182ms.
+
+-------------------- Express (Fast 3G)--------------------
+200 0.0001MB requests
+- Upload took 19631.700000027195ms.
+- Download took 19450.599999981932ms.
+200 0.001MB requests
+- Upload took 20380.499999970198ms.
+- Download took 19767.20000000205ms.
+20 0.01MB requests
+- Upload took 4396.7999999877065ms.
+- Download took 3248.9999999525025ms.
+20 0.1MB requests
+- Upload took 25022.400000016205ms.
+- Download took 12380.699999979697ms.

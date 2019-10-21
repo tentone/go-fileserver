@@ -10,5 +10,10 @@
     "title": "Benchmark",
     "width": 10,
     "height": 10
+  },
+  "dependencies": {
+    "express": "",
+    "express-fileupload": "",
+    "nwjs": ""
   }
 }

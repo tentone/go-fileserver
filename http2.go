@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
@@ -21,11 +20,11 @@ import (
 const MAX_UPLOAD_SIZE = 32 * 200000 * 1024
 const DATA_PATH = "./data"
 
-func main() {
+func maina() {
 
 	var router = Create()
 
-	var cfg *tls.Config = &tls.Config{
+	/*var cfg *tls.Config = &tls.Config{
 		MinVersion: tls.VersionTLS12,
 		CurvePreferences: []tls.CurveID{tls.CurveP521, tls.CurveP384, tls.CurveP256},
 		PreferServerCipherSuites: true,
@@ -35,13 +34,13 @@ func main() {
 			tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
 			tls.TLS_RSA_WITH_AES_256_CBC_SHA,
 		},
-	}
+	}*/
 
 	var server http.Server = http.Server{
 		Addr: ":9090",
 		Handler: router,
-		TLSConfig: cfg,
-		TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler), 0),
+		//TLSConfig: cfg,
+		//TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler), 0),
 	}
 
 	// Generate certificate for localhost
@@ -96,11 +95,6 @@ func ResourceGet(writer http.ResponseWriter, request *http.Request) {
 
 	var path string = DATA_PATH + "/" + strings.ToLower(library) + "/" + uuid
 
-	// TODO <REMOVE>
-	println("Resource GET")
-	println(library)
-	println(path)
-
 	// Read file
 	var err error
 	var file []byte
@@ -123,12 +117,6 @@ func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
 	var format = request.FormValue("format")
 
 	var path string = DATA_PATH + "/" + strings.ToLower(library)
-
-	// TODO <REMOVE>
-	println("Resource UPLOAD")
-	println(library)
-	println(format)
-	println(path)
 
 	// Check if path exists and create if necessary
 	var err error

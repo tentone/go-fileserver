@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func maina() {
+func main() {
 
 	global.LoadVersion()
 

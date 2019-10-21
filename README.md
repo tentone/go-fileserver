@@ -31,6 +31,12 @@
 
 
 
+### Performance
+
+- Compared the performance of fasthttp on http 1.x against the performance of net/http running on http 2.0.
+
+
+
 ### License
 
 - This project is distributed under an MIT license available on the project repository.

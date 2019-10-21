@@ -22,7 +22,7 @@
          */
         function Benchmark(){}
 
-        Benchmark.url = "https:localhost:9090/";
+        Benchmark.url = "http:localhost:9090/";
         Benchmark.categories = ["geometries", "materials", "shapes", "textures"];
         Benchmark.format = "dat";
         Benchmark.testData = null;
@@ -34,8 +34,8 @@
          */
         Benchmark.run = function()
         {
-            Benchmark.recursive([1], [1e2], 0);
-            //Benchmark.recursive([3000, 1000, 500, 500, 200, 20], [1e2, 1e3, 1e4, 1e5, 1e6, 1e8], 0);
+            //Benchmark.recursive([200, 200, 20, 20], [1e2, 1e3, 1e4, 1e5], 0);
+            Benchmark.recursive([3000, 1000, 500, 500, 200, 20], [1e2, 1e3, 1e4, 1e5, 1e6, 1e8], 0);
         };
 
         Benchmark.generateUUID = (function ()
