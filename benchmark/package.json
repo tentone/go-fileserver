@@ -4,6 +4,7 @@
   "description": "File server benchmark app",
   "version": "0.0.0",
   "keywords": [],
+  "chromium-args": "--allow-insecure-localhost",
   "window": {
     "show": true,
     "title": "Benchmark",

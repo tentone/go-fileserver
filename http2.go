@@ -74,30 +74,32 @@ type Route struct {
 type Routes []Route
 
 var routes = Routes{
-	Route{"GET", "/resource/get/{library}/{uuid}", ResourceGet},
-	Route{"POST", "/resource/upload", ResourceUpload},
+	Route{"GET", "/v1/resource/get/{library}/{uuid}", ResourceGet},
+	Route{"POST", "/v1/resource/upload", ResourceUpload},
 }
 
 func Create() *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
+	var router *mux.Router = mux.NewRouter().StrictSlash(true)
 
 	for _, route := range routes {
-		var handler http.Handler
-		handler = route.HandlerFunction
-		router.Methods(route.Verb).Path(route.Path).Handler(handler)
+		router.Methods(route.Verb).Path(route.Path).Handler(route.HandlerFunction)
 	}
 
 	return router
 }
 
 func ResourceGet(writer http.ResponseWriter, request *http.Request) {
-	writer.Header().Set("Content-Type", "application/octet-stream; charset=UTF-8")
+
+	print("Resource GET")
 
 	// Form data
 	var variables = mux.Vars(request)
 	var uuid string = variables["uuid"]
 	var library string = variables["library"]
 	var fileLocation string = filepath.Join(DATA_PATH, library, uuid)
+
+	print(library)
+	print(uuid)
 
 	// Read file
 	var err error
@@ -109,6 +111,8 @@ func ResourceGet(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	// Write file
+	writer.Header().Set("Content-Type", "application/octet-stream; charset=UTF-8")
 	writer.WriteHeader(200)
 	_, _ = writer.Write(file)
 }
