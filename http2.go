@@ -143,7 +143,7 @@ func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// File path
-	var fpath string = "/" + path + strings.ToLower(uuid) + "." + format
+	var fpath string =   path + "/" + strings.ToLower(uuid) + "." + format
 
 	// Read request data
 	request.Body = http.MaxBytesReader(writer, request.Body, MAX_UPLOAD_SIZE)
