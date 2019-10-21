@@ -11,15 +11,15 @@ import (
 	"io/ioutil"
 	"log"
 	"math/big"
+	"mime/multipart"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 )
 
 const MAX_UPLOAD_SIZE = 32 * 200000 * 1024
-const DATA_PATH = "./data/"
+const DATA_PATH = "./data"
 
 func main() {
 
@@ -89,82 +89,102 @@ func Create() *mux.Router {
 }
 
 func ResourceGet(writer http.ResponseWriter, request *http.Request) {
-
-	print("Resource GET")
-
 	// Form data
 	var variables = mux.Vars(request)
-	var uuid string = variables["uuid"]
 	var library string = variables["library"]
-	var fileLocation string = filepath.Join(DATA_PATH, library, uuid)
+	var uuid string = variables["uuid"]
 
-	print(library)
-	print(uuid)
+	var path string = DATA_PATH + "/" + strings.ToLower(library) + "/" + uuid
+
+	// TODO <REMOVE>
+	println("Resource GET")
+	println(library)
+	println(path)
 
 	// Read file
 	var err error
 	var file []byte
-	file, err = ioutil.ReadFile(fileLocation)
+	file, err = ioutil.ReadFile(path)
 
 	if err != nil {
-		writer.WriteHeader(500)
+		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	// Write file
 	writer.Header().Set("Content-Type", "application/octet-stream; charset=UTF-8")
-	writer.WriteHeader(200)
+	writer.WriteHeader(http.StatusOK)
 	_, _ = writer.Write(file)
 }
 
 func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
 	var uuid = request.FormValue("uuid")
 	var library = request.FormValue("library")
+	var format = request.FormValue("format")
 
-	var fileLocation = filepath.Join(DATA_PATH, strings.ToLower(library), uuid)
+	var path string = DATA_PATH + "/" + strings.ToLower(library)
 
-	request.Body = http.MaxBytesReader(writer, request.Body, MAX_UPLOAD_SIZE)
+	// TODO <REMOVE>
+	println("Resource UPLOAD")
+	println(library)
+	println(format)
+	println(path)
 
+	// Check if path exists and create if necessary
 	var err error
-	err = request.ParseMultipartForm(MAX_UPLOAD_SIZE);
-	if err != nil {
-		writer.WriteHeader(500)
-		return
-	}
-
-	if _, err := os.Stat(fileLocation); os.IsNotExist(err) {
-		err = os.MkdirAll(fileLocation, 0755)
+	_, err = os.Stat(path)
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(path, 0755)
 		if err != nil {
-			panic(err)
+			_, _ = writer.Write([]byte("Failed to create directory to store data."))
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 	}
 
-	file, _, err := request.FormFile("file")
+	// File path
+	var fpath string = "/" + path + strings.ToLower(uuid) + "." + format
+
+	// Read request data
+	request.Body = http.MaxBytesReader(writer, request.Body, MAX_UPLOAD_SIZE)
+	err = request.ParseMultipartForm(MAX_UPLOAD_SIZE);
 	if err != nil {
-		writer.WriteHeader(500)
+		_, _ = writer.Write([]byte("Cannot read data from the request form."))
+		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	var file multipart.File
+	file, _, err = request.FormFile("file")
+	if err != nil {
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	defer file.Close()
 
-	fileBytes, err := ioutil.ReadAll(file)
+	var data []byte
+	data, err = ioutil.ReadAll(file)
 	if err != nil {
-		writer.WriteHeader(500)
+		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	newFile, err := os.Create(fileLocation)
+	// Create and store file
+	var storeFile *os.File
+	storeFile, err = os.Create(fpath)
 	if err != nil {
-		writer.WriteHeader(500)
+		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	defer newFile.Close()
+	defer storeFile.Close()
 
-	if _, err := newFile.Write(fileBytes); err != nil {
-		writer.WriteHeader(500)
+	if _, err := storeFile.Write(data); err != nil {
+		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	writer.WriteHeader(http.StatusOK)
 }
 
 /// Generate a TLS certificate from host name.
