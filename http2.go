@@ -6,201 +6,128 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
-	"encoding/json"
 	"encoding/pem"
+	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	"math/big"
-	"net"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
-
-	"github.com/gorilla/mux"
 )
+
+const MAX_UPLOAD_SIZE = 32 * 200000 * 1024
+const DATA_PATH = "./data/"
 
 func main() {
 
-	var router = NewRouter()
+	var router = Create()
 
-	var server http.Server
-	server = http.Server{Addr: ":9090", Handler: router}
+	var cfg *tls.Config = &tls.Config{
+		MinVersion: tls.VersionTLS12,
+		CurvePreferences: []tls.CurveID{tls.CurveP521, tls.CurveP384, tls.CurveP256},
+		PreferServerCipherSuites: true,
+		CipherSuites: []uint16{
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+			tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_RSA_WITH_AES_256_CBC_SHA,
+		},
+	}
 
+	var server http.Server = http.Server{
+		Addr: ":9090",
+		Handler: router,
+		TLSConfig: cfg,
+		TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler), 0),
+	}
+
+	// Generate certificate for localhost
 	var cert, privateKey []byte
 	var err error
-	cert, privateKey, err = GenerateCertificate("localhost", "unodigital")
+	cert, privateKey, err = GenerateCertificate("localhost", "UNO Digital")
 	if err != nil {
 		log.Fatal("Failed to generate certificate file.")
 		return
 	}
 
-	// Start the server with TLS, since we are running HTTP/2 it must be run with TLS.
-	log.Printf("Serving...")
+	// Write certificate files
+	_ = ioutil.WriteFile("./local.crt", cert, 0644)
+	_ = ioutil.WriteFile("./local.key", privateKey, 0644)
 
-	err = ListenAndServeTLS(&server, cert, privateKey)
+	// Start the server with TLS, since we are running HTTP/2 it must be run with TLS.
+	err = server.ListenAndServeTLS("local.crt", "local.key")
 	if err != nil {
 		log.Fatal("Failed to start server.")
 		return
 	}
 }
 
-func ListenAndServeTLS(srv *http.Server, certPEMBlock, keyPEMBlock []byte) error {
-	addr := srv.Addr
-	if addr == "" {
-		addr = ":https"
-	}
-	config := &tls.Config{}
-	if srv.TLSConfig != nil {
-		*config = *srv.TLSConfig
-	}
-	//TODO <CHECK THIS>
-	if config.NextProtos == nil {
-		config.NextProtos = []string{"http/1.1"}
-	}
-
-	var err error
-	config.Certificates = make([]tls.Certificate, 1)
-	config.Certificates[0], err = tls.X509KeyPair(certPEMBlock, keyPEMBlock)
-	if err != nil {
-		return err
-	}
-
-	ln, err := net.Listen("tcp", addr)
-	if err != nil {
-		return err
-	}
-
-	tlsListener := tls.NewListener(tcpKeepAliveListener{ln.(*net.TCPListener)}, config)
-	return srv.Serve(tlsListener)
-}
-
-// tcpKeepAliveListener sets TCP keep-alive timeouts on accepted connections.
-// It's used by ListenAndServe and ListenAndServeTLS so dead TCP connections (e.g. closing laptop mid-download) eventually go away.
-type tcpKeepAliveListener struct {
-	*net.TCPListener
-}
-
-func (ln tcpKeepAliveListener) Accept() (c net.Conn, err error) {
-	tc, err := ln.AcceptTCP()
-	if err != nil {
-		return
-	}
-	_ = tc.SetKeepAlive(true)
-	_ = tc.SetKeepAlivePeriod(3 * time.Minute)
-	return tc, nil
-}
-
-
 type Route struct {
-	Name            string
-	Verb            string
-	Path            string
+	Verb string
+	Path string
 	HandlerFunction http.HandlerFunc
 }
 
 type Routes []Route
 
 var routes = Routes{
-	Route{"GetGeneric", "GET", "/scene/{uuidscene}/{library}/{uuidresource}", GenericGet},
-	Route{"UploadResource", "POST", "/upload", UploadResource},
-	Route{"Ping", "GET", "ping", Ping},
+	Route{"GET", "/resource/get/{library}/{uuid}", ResourceGet},
+	Route{"POST", "/resource/upload", ResourceUpload},
 }
 
-func NewRouter() *mux.Router {
+func Create() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
 	for _, route := range routes {
 		var handler http.Handler
 		handler = route.HandlerFunction
-		handler = LogAccess(handler, route.Name)
-		router.Methods(route.Verb).Path(route.Path).Name(route.Name).Handler(handler)
+		router.Methods(route.Verb).Path(route.Path).Handler(handler)
 	}
 
 	return router
 }
 
-func LogAccess(handler http.Handler, name string) http.Handler {
-	return http.HandlerFunc(
-		func(w http.ResponseWriter, r *http.Request) {
-			//start := time.Now()
-			handler.ServeHTTP(w, r)
-			//log.Printf("%s \t%s\t%s\t%s", r.Method, r.RequestURI, name, time.Since(start))
-		},
-	)
-}
-
-func ProcessLog(action string, api string, message string, actionTime time.Time) {
-	//log.Printf(" PROCESS LOG : %s \t%s\t%s\t%s", action, api, message, time.Since(actionTime))
-}
-
-func ErrorLog(w http.ResponseWriter, action string, api string, message string, err error, actionTime time.Time) {
-	//log.Printf(" PROCESS LOG : \n\t ACTION : %s \n\t API : %s \n\t MESSAGE : %s \n\t TIME:%s \n\t ERROR :%s", action, api, message, time.Since(actionTime), err)
-	w.WriteHeader(500)
-
-}
-
-const maxUploadSize = 32 * 200000 * 1024
-const basePath = ".\\data\\"
-
-func getFile(fileLocation string, file chan<- []byte, err chan<- error) {
-	f, e := ioutil.ReadFile(fileLocation)
-	ProcessLog("GetResource ", "Method", "File - size"+strconv.Itoa(len(f)), time.Now())
-	err <- e
-	file <- f
-}
-
-func GenericGet(w http.ResponseWriter, r *http.Request) {
-	start := time.Now()
-	ProcessLog("GetResource ", r.RequestURI, "Started", start)
-
+func ResourceGet(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/octet-stream; charset=UTF-8")
 
-	file := make(chan []byte)
+	// Form data
+	var variables = mux.Vars(r)
+	var uuid string = variables["uuid"]
+	var library string = variables["library"]
+	var fileLocation string = filepath.Join(DATA_PATH, library, uuid)
 
-	variables := mux.Vars(r)
-	sceneId := variables["uuidscene"]
-	resourceId := variables["uuidresource"]
-	library := variables["library"]
+	// Read file
+	var err error
+	var file []byte
+	file, err = ioutil.ReadFile(fileLocation)
 
-	fileLocation := filepath.Join(basePath, sceneId, library, resourceId)
-	ProcessLog("FILE LOCATION", "", fileLocation, start)
-
-	err := make(chan error)
-
-	go getFile(fileLocation, file, err)
-
-	if <-err != nil {
-		ErrorLog(w, "UploadResource ", r.RequestURI, "GetResource ERROR", <-err, start)
+	if err != nil {
+		w.WriteHeader(500)
+		return
 	}
 
 	w.WriteHeader(200)
-	w.Write([]byte(<-file))
-
-	ProcessLog("GetResource ", r.RequestURI, "Finished", start)
+	_, _ = w.Write(file)
 }
 
-func UploadResource(w http.ResponseWriter, r *http.Request) {
-	start := time.Now()
-	ProcessLog("UploadResource ", r.RequestURI, "START Upload", start)
+func ResourceUpload(w http.ResponseWriter, r *http.Request) {
+	var uuid = r.FormValue("uuid")
+	var library = r.FormValue("library")
 
-	sceneId := r.FormValue("scene")
-	resourceId := r.FormValue("resource")
-	library := r.FormValue("library")
+	var fileLocation = filepath.Join(DATA_PATH, strings.ToLower(library), uuid)
 
-	scenePath := filepath.Join(basePath, sceneId, strings.ToLower(library))
-	fileLocation := filepath.Join(basePath, sceneId, strings.ToLower(library), resourceId)
+	r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
 
-	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
-
-	if err := r.ParseMultipartForm(maxUploadSize); err != nil {
-		ErrorLog(w, "UploadResource ", r.RequestURI, "ParseMultipartForm ERROR", err, start)
+	if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
+		w.WriteHeader(500)
+		return
 	}
 
-	if _, err := os.Stat(scenePath); os.IsNotExist(err) {
-		err = os.MkdirAll(scenePath, 0755)
+	if _, err := os.Stat(fileLocation); os.IsNotExist(err) {
+		err = os.MkdirAll(fileLocation, 0755)
 		if err != nil {
 			panic(err)
 		}
@@ -208,41 +135,31 @@ func UploadResource(w http.ResponseWriter, r *http.Request) {
 
 	file, _, err := r.FormFile("file")
 	if err != nil {
-		ErrorLog(w, "UploadResource ", r.RequestURI, "FormFile ERROR", err, start)
+		w.WriteHeader(500)
+		return
 	}
+
 	defer file.Close()
 
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		ErrorLog(w, "UploadResource ", r.RequestURI, "ReadAll ERROR", err, start)
+		w.WriteHeader(500)
+		return
 	}
 
 	newFile, err := os.Create(fileLocation)
 	if err != nil {
-		ErrorLog(w, "UploadResource ", r.RequestURI, "ERROR : Could not be placed at: "+filepath.Join(basePath, sceneId), err, start)
+		w.WriteHeader(500)
+		return
 	}
+
 	defer newFile.Close()
 
-	start2 := time.Now()
-
-	ProcessLog("WRITE START ", r.RequestURI, "START EXECUTION", start2)
 	if _, err := newFile.Write(fileBytes); err != nil {
-		ErrorLog(w, "UploadResource ", r.RequestURI, "Write ERROR", err, start)
+		w.WriteHeader(500)
+		return
 	}
-	ProcessLog("WRITE END ", r.RequestURI, "END EXECUTION", start2)
-
-	if err == nil {
-		_, _ = w.Write([]byte("Uploaded successfully"))
-	}
-
-	ProcessLog("UploadResource ", r.RequestURI, "END Upload", start)
-
 }
-
-func Ping(w http.ResponseWriter, r *http.Request) {
-	_ = json.NewEncoder(w).Encode("Pong")
-}
-
 
 /// Generate a TLS certificate from host name.
 ///
@@ -298,4 +215,3 @@ func GenerateCertificate(host string, organization string) ([]byte, []byte, erro
 
 	return b, p, err
 }
-

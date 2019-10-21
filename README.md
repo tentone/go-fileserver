@@ -19,8 +19,8 @@
 
 ### Data storage
 
-- Data is stored as files, using the UUID identifier as file name.
-- The platform relies on the filesystem to index all data.
+- Data is stored as files, using the UUID identifier as file name and the correct file format extension.
+- The platform relies on the filesystem to index and access all data quickly.
 
 
 

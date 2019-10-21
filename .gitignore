@@ -14,3 +14,7 @@
 .idea/
 data/
 server.log
+
+local.crt
+
+local.key

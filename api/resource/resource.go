@@ -65,12 +65,14 @@ func Upload(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	// Make directory
-	err = os.MkdirAll(global.DataPath + library, os.ModePerm)
-	if err != nil {
 
-		utils.SetErrorResponse(ctx, "Failed to create directory, check the server configuration.", fasthttp.StatusInternalServerError, err)
-		return
+	// Make directory
+	if _, err := os.Stat(global.DataPath + library); os.IsNotExist(err) {
+		err = os.MkdirAll(global.DataPath + library, os.ModePerm)
+		if err != nil {
+			utils.SetErrorResponse(ctx, "Failed to create directory, check the server configuration.", fasthttp.StatusInternalServerError, err)
+			return
+		}
 	}
 
 	var path string = global.DataPath + library + "/" + uuid + "." + format
