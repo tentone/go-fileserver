@@ -1,75 +1,46 @@
 package database
 
 import (
-	"database/sql"
+	"fmt"
 	"github.com/google/logger"
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/tentone/godonkey/global"
+	"github.com/jinzhu/gorm"
 )
 
-var database *sql.DB
+// GORM database object
+var db *gorm.DB
 
-// Load SQLite database file, and try to create the data structure if it is not present.
-//
-// The path for the database file is specified in the configuration file.
-func Load() {
+// Get access to the GORM database object. Used to access data and perform operations.
+func Get() *gorm.DB {
+	return db
+}
 
+func Create() {
+
+}
+
+// Connect to the SQL database using the configuration specified.
+func Connect() {
 	var err error
+	var connection string = fmt.Sprintf("server=%s;user id=%s;password=%s;port=%s;database=%s;%s", global.SqlServer, global.SqlUser, global.SqlPassword, global.SqlServerPort, global.SqlDatabase, global.SqlParams)
 
-	database, err = sql.Open("sqlite3", global.SqliteDatabase)
+	logger.Info("Connecting to the database " + connection)
+
+	db, err = gorm.Open("mssql", connection)
 	if err != nil {
-		logger.Error("Error opening the sqlite database file.")
+		logger.Error("Error connecting to the SQL server." + err.Error())
 		return
 	}
 
-	CreateStructure()
+	Create()
 }
 
-// Run a query against this database, the function checks internally for error in the SQL query.
-//
-// Print them into the application log for debugging.
-func Query(query string) sql.Result {
-
-	var statement, err = database.Prepare (query)
+// Close the database db, should be called before exiting the application.
+func Close() {
+	var err = db.Close()
 	if err != nil {
-		logger.Error("Error in the SQL query. " + query + " " + err.Error())
-		return nil
+		logger.Error("Error closing connection to the SQL server.")
+		return
 	}
 
-	var result sql.Result
-
-	result, err = statement.Exec()
-	if err != nil {
-		logger.Error("Error running the SQL query. " + query + " " + err.Error())
-		return nil
-	}
-
-	return result
-}
-
-// Create the database structure, create tables for every type of resource.
-//
-// All tables use the same base layout.
-func CreateStructure() {
-
-	var tables = [4]string{global.IMAGES, global.FILES, global.GEOMETRIES, global.POTREE}
-
-	for i := 0; i < len(tables); i++ {
-
-		Query("CREATE TABLE IF NOT EXISTS '" + tables[i] + "' (uuid VARCHAR(36) UNIQUE PRIMARY KEY, format TEXT, filename TEXT);")
-	}
-}
-
-// Add a resource entry to the database.
-func InsertResource(library string, uuid string, format string, filename string) {
-
-	logger.Info("Resource added " + library + ", uuid " + uuid + ", format " + format)
-	Query("INSERT INTO " + library + " (uuid, format, filename) VALUES ('" + uuid + "', '" + format + "', '" + filename + "');")
-}
-
-// Remove a resource from the database.
-func RemoveResource(library string, uuid string) {
-
-	logger.Info("Resource deleted " + library + ", uuid " + uuid)
-	Query("DELETE FROM " + library + " WHERE uuid = " + uuid + ";")
+	logger.Info("Closed database connection.")
 }
