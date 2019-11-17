@@ -21,7 +21,6 @@ func ResourceCreateDB(db *gorm.DB) {
 }
 
 func NewResource(uuid string, format string) *Resource {
-
 	var r = new(Resource)
 
 	r.UUID = uuid

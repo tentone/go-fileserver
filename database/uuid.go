@@ -1,4 +1,4 @@
-package identification
+package database
 
 import (
 "github.com/jinzhu/gorm"
@@ -27,7 +27,7 @@ func NewUUID() UUID {
 
 	var u = UUID{}
 
-	var ug, _ = uuid.NewV4()
+	var ug = uuid.NewV4()
 	u.ID = ug.String()
 
 	return u

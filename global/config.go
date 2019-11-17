@@ -17,7 +17,6 @@ type ServerConfig struct {
 type DatabaseConfig struct {
 	Dialect string `json:"dialect"`
 	Path string `json:"path;omitempty"` // Used for SQLITE only
-
 }
 
 // General configuration structure, containing all parameters.

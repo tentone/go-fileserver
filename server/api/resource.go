@@ -28,9 +28,14 @@ func ResourceGet(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// Write file
+	_, err = writer.Write(file)
+	if err != nil {
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	writer.Header().Set("Content-Type", "application/octet-stream; charset=UTF-8")
 	writer.WriteHeader(http.StatusOK)
-	_, _ = writer.Write(file)
 }
 
 func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
