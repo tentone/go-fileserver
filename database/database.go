@@ -3,19 +3,22 @@ package database
 import (
 	"github.com/google/logger"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mssql"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/tentone/godonkey/global"
 )
 
-// GORM database object
+// GORM database object, used to access data and perform operations.
 var DB *gorm.DB
 
-// Get the GORM database object, used to access data and perform operations.
-func Get() *gorm.DB {
-	return DB
-}
 
-//
+
+// Create database
 func Create() {
+	Connect()
+
 
 }
 

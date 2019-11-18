@@ -8,7 +8,7 @@ import (
 )
 
 const MSSQL string = "mssql"
-const SQLITE string = "sqlite"
+const SQLITE string = "sqlite3"
 const MYSQL string = "mysql"
 const POSTGRES string = "postgres"
 
@@ -59,7 +59,6 @@ type ServerConfig struct {
 // Database access configuration
 type DatabaseConfig struct {
 	Dialect string `json:"dialect"`
-	Path string `json:"path,omitempty"` // Used for SQLITE only
 	ConnectionString string `json:"connectionString,omitempty"`
 }
 

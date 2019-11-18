@@ -25,8 +25,8 @@ var routes = Routes{
 func RouterCreate() *mux.Router {
 	var router *mux.Router = mux.NewRouter().StrictSlash(true)
 
-	for _, route := range routes {
-		router.Methods(route.Type).Path(route.Path).Handler(route.Handler)
+	for _, value := range routes {
+		router.Methods(value.Type).Path(value.Path).Handler(value.Handler)
 	}
 
 	return router

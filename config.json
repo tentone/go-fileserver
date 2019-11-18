@@ -7,9 +7,8 @@
 		"generateCertTLS": true
 	},
 	"database": {
-		"dialect": "sqlite",
-		"path": "database.db",
-		"connectionString": "server=SqlServer;user id=SqlUser;password=SqlPassword;port=SqlPort;database=SqlDatabase"
+		"dialect": "sqlite3",
+		"connectionString": "database.db"
 	},
 	"fileServer": {
 		"maxUploadSize": 0

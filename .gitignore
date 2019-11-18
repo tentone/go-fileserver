@@ -18,3 +18,5 @@ server.log
 local.crt
 
 local.key
+
+database.db
