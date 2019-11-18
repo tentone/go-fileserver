@@ -17,13 +17,12 @@ func ResourceGet(writer http.ResponseWriter, request *http.Request) {
 	var library string = variables["library"]
 	var uuid string = variables["uuid"]
 
-	var path string = global.Config.Storage.Path + "/" + strings.ToLower(library) + "/" + uuid
+	var path string = global.Config.Storage.Path + "/" + strings.ToLower(library) + "/" + strings.ToLower(uuid)
 
 	// Read file
 	var err error
 	var file []byte
 	file, err = ioutil.ReadFile(path)
-
 	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
@@ -61,7 +60,7 @@ func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// File path
-	var fpath string =   path + "/" + strings.ToLower(uuid) + "." + format
+	var fpath string = strings.ToLower(path) + "/" + strings.ToLower(uuid) + "." + format
 
 	// Read request data
 	request.Body = http.MaxBytesReader(writer, request.Body, global.Config.FileServer.MaxUploadSize)
