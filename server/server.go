@@ -14,13 +14,8 @@ import (
 	"time"
 )
 
-// Structure represents the server entry point.
-//
-// Stores pointers to all configurations required
-type Server struct {}
-
 // Start the server using data from the configurations structures provided.
-func (s Server) Start() {
+func ServerStart() {
 	var router = RouterCreate()
 	var err error
 

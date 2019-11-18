@@ -9,7 +9,7 @@
 	"database": {
 		"dialect": "sqlite",
 		"path": "database.db",
-		"connectionString": ""
+		"connectionString": "server=SqlServer;user id=SqlUser;password=SqlPassword;port=SqlPort;database=SqlDatabase"
 	},
 	"fileServer": {
 		"maxUploadSize": 0

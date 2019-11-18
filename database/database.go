@@ -1,19 +1,20 @@
 package database
 
 import (
-	"fmt"
 	"github.com/google/logger"
 	"github.com/jinzhu/gorm"
+	"github.com/tentone/godonkey/global"
 )
 
 // GORM database object
-var db *gorm.DB
+var DB *gorm.DB
 
-// Get access to the GORM database object. Used to access data and perform operations.
+// Get the GORM database object, used to access data and perform operations.
 func Get() *gorm.DB {
-	return db
+	return DB
 }
 
+//
 func Create() {
 
 }
@@ -21,13 +22,9 @@ func Create() {
 // Connect to the SQL database using the configuration specified.
 func Connect() {
 	var err error
-	var connection string = fmt.Sprintf("server=%s;user id=%s;password=%s;port=%s;database=%s;%s", global.SqlServer, global.SqlUser, global.SqlPassword, global.SqlServerPort, global.SqlDatabase, global.SqlParams)
-
-	logger.Info("Connecting to the database " + connection)
-
-	db, err = gorm.Open("mssql", connection)
+	DB, err = gorm.Open(global.Config.Database.Dialect, global.Config.Database.ConnectionString)
 	if err != nil {
-		logger.Error("Error connecting to the SQL server." + err.Error())
+		logger.Fatal("Error connecting to the SQL server.", err.Error())
 		return
 	}
 
@@ -36,11 +33,9 @@ func Connect() {
 
 // Close the database db, should be called before exiting the application.
 func Close() {
-	var err = db.Close()
+	var err = DB.Close()
 	if err != nil {
-		logger.Error("Error closing connection to the SQL server.")
+		logger.Fatal("Error closing connection to the SQL server.", err.Error())
 		return
 	}
-
-	logger.Info("Closed database connection.")
 }
