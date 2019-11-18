@@ -2,6 +2,7 @@ package global
 
 import (
 	"encoding/json"
+	"github.com/google/logger"
 	"io/ioutil"
 	"os"
 )
@@ -18,14 +19,14 @@ const FTP string = "ftp"
 var Config ConfigStruct = ConfigStruct{}
 
 // Read configuration from file
-func LoadConfig(path string) (e error) {
+func LoadConfig(path string) {
 	var err error
 
 	// Read data from file
 	var file *os.File
 	file, err = os.Open(path)
 	if err != nil {
-		return err
+		logger.Fatal("Failed to read the configuration file.", path, err)
 	}
 
 	// Unmarshal json data
@@ -33,10 +34,8 @@ func LoadConfig(path string) (e error) {
 	data, err = ioutil.ReadAll(file)
 	err = json.Unmarshal(data, &Config)
 	if err != nil {
-		return err
+		logger.Fatal("Failed to parse the configuration file.", path, err)
 	}
-
-	return nil
 }
 
 // General configuration structure, containing all parameters.
@@ -66,7 +65,7 @@ type DatabaseConfig struct {
 
 // File server specific configuration
 type FileServerConfig struct {
-	MaxUploadSize int `json:"maxUploadSize"`
+	MaxUploadSize int64 `json:"maxUploadSize"`
 }
 
 // Storage configuration

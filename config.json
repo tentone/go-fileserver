@@ -8,7 +8,8 @@
 	},
 	"database": {
 		"dialect": "sqlite",
-		"path": "database.db"
+		"path": "database.db",
+		"connectionString": ""
 	},
 	"fileServer": {
 		"maxUploadSize": 0

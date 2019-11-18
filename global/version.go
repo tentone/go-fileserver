@@ -2,6 +2,7 @@ package global
 
 import (
 	"encoding/json"
+	"github.com/google/logger"
 	"io/ioutil"
 	"os"
 )
@@ -10,14 +11,14 @@ import (
 var Version VersionStruct = VersionStruct{}
 
 // Read version information from file
-func LoadVersion(path string) error {
+func LoadVersion(path string) {
 	var err error
 
 	// Read data from file
 	var file *os.File
 	file, err = os.Open(path)
 	if err != nil {
-		return err
+		logger.Fatal("Failed to read the version file.", path, err)
 	}
 
 	// Unmarshal json data
@@ -25,10 +26,8 @@ func LoadVersion(path string) error {
 	data, err = ioutil.ReadAll(file)
 	err = json.Unmarshal(data, &Version)
 	if err != nil {
-		return err
+		logger.Fatal("Failed to parse the version file.", path, err)
 	}
-
-	return nil
 }
 
 // Structure to represent the version of the server

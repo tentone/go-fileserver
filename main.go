@@ -6,17 +6,9 @@ import (
 )
 
 func main() {
-	var err error
-
-	err = global.LoadVersion("version.json")
-	if err != nil {
-		// TODO <ADD CODE HERE>
-	}
-
-	err = global.LoadConfig("config.json")
-	if err != nil {
-		// TODO <ADD CODE HERE>
-	}
+	global.StartLogger("server.log")
+	global.LoadVersion("version.json")
+	global.LoadConfig("config.json")
 
 	var s = server.Server{}
 	s.Start()

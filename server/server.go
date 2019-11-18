@@ -6,9 +6,9 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
+	"github.com/google/logger"
 	"github.com/tentone/godonkey/global"
 	"io/ioutil"
-	"log"
 	"math/big"
 	"net/http"
 	"time"
@@ -29,7 +29,7 @@ func (s Server) Start() {
 		var cert, privateKey []byte
 		cert, privateKey, err = GenerateCertificate("localhost", "Local")
 		if err != nil {
-			log.Fatal("Failed to generate certificate file.")
+			logger.Fatal("Failed to generate certificate file.")
 		}
 
 		// Write certificate files
@@ -46,7 +46,7 @@ func (s Server) Start() {
 
 		err = server.ListenAndServeTLS(global.Config.Server.CertFileTLS, global.Config.Server.KeyFileTLS)
 		if err != nil {
-			log.Fatal("Failed to start HTTPS/H2 server.")
+			logger.Fatal("Failed to start HTTPS/H2 server.")
 		}
 	}
 
@@ -58,7 +58,7 @@ func (s Server) Start() {
 		}
 		err = server.ListenAndServe()
 		if err != nil {
-			log.Fatal("Failed to start HTTP server.")
+			logger.Fatal("Failed to start HTTP server.")
 		}
 	}
 }
