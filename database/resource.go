@@ -6,10 +6,10 @@ import (
 
 type Resource struct {
 
-	ID uint `gorm:"primary_key" json:"-"`
+	NumID
 
 	// UUID of the resource stored in the resource server
-	UUID string `gorm:"type:uniqueidentifier;unique;column:uuid" json:"uuid"`
+	UUID string `gorm:"type:varchar(255);unique;column:uuid" json:"uuid"`
 
 	// Format of the resource stored in the resource server
 	Format string `gorm:"column:format" json:"format"`
@@ -75,9 +75,6 @@ func GetResourceByIDDB(db *gorm.DB, id uint) (a *Resource, e error) {
 	if conn.Error != nil {
 		return nil, conn.Error
 	}
-
-	resource.UUID = utils.SQLFormatUUID(resource.UUID)
-
 	return resource, nil
 }
 
@@ -90,8 +87,6 @@ func GetResourceByUuidDB(db *gorm.DB, uuid string) (a *Resource, e error) {
 	if conn.Error != nil {
 		return nil, conn.Error
 	}
-
-	resource.UUID = utils.SQLFormatUUID(resource.UUID)
 
 	return resource, nil
 }

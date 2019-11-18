@@ -1,9 +1,8 @@
 package database
 
 import (
-"github.com/jinzhu/gorm"
-"github.com/satori/go.uuid"
-"time"
+	"github.com/satori/go.uuid"
+	"time"
 )
 
 // UUID identification should be used for every public accessible object.
@@ -18,17 +17,8 @@ type UUID struct {
 	UpdatedAt *time.Time `json:"-"`
 }
 
-func (base *UUID) BeforeCreate(scope *gorm.Scope) error {
-
-	return nil
-}
-
 func NewUUID() UUID {
-
 	var u = UUID{}
-
-	var ug = uuid.NewV4()
-	u.ID = ug.String()
-
+	u.ID =  uuid.NewV4().String()
 	return u
 }

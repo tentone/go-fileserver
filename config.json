@@ -1,9 +1,21 @@
 {
-	"address": ":9090",
-	"addressTLS": "",
-	"certFileTLS": "",
-	"keyFileTLS": "",
-	"dataPath": "data/",
-	"sqliteDatabase": "./database.db",
+	"server": {
+		"address": ":8000",
+		"addressTLS": ":9090",
+		"certFileTLS": "./local.crt",
+		"keyFileTLS": "./local.key",
+		"generateCertTLS": true
+	},
+	"database": {
+		"dialect": "sqlite",
+		"path": "database.db"
+	},
+	"fileServer": {
+		"maxUploadSize": 0
+	},
+	"storage": {
+		"mode": "file",
+		"path": "./data/"
+	},
 	"developmentMode": true
 }

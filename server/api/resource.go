@@ -94,7 +94,8 @@ func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
 
 	defer storeFile.Close()
 
-	if _, err := storeFile.Write(data); err != nil {
+	_, err = storeFile.Write(data)
+	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
