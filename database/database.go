@@ -13,13 +13,14 @@ import (
 // GORM database object, used to access data and perform operations.
 var DB *gorm.DB
 
-
-
 // Create database
 func Create() {
 	Connect()
 
-
+	// Create databases
+	ErrorLogMigrate(DB)
+	LibraryMigrate(DB)
+	ResourceMigrate(DB)
 }
 
 // Connect to the SQL database using the configuration specified.

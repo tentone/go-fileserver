@@ -14,7 +14,7 @@ type Resource struct {
 	Format string `gorm:"column:format" json:"format"`
 }
 
-func ResourceCreateDB(db *gorm.DB) {
+func ResourceMigrate(db *gorm.DB) {
 	db.SingularTable(true)
 	db.AutoMigrate(&Resource{})
 }
