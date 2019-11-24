@@ -14,9 +14,6 @@ type ErrorLog struct {
 	// Date and time of the error log
 	Date time.Time `gorm:"column:date" json:"date"`
 
-	// Data send by the user client to the API in the request body
-	Received string `gorm:"column:received;type:text" json:"received"`
-
 	// API route requested that caused the problem
 	Route string `gorm:"column:route;type:text" json:"route"`
 
@@ -35,15 +32,24 @@ func ErrorLogMigrate(db *gorm.DB) {
 	db.AutoMigrate(&ErrorLog{})
 }
 
-func NewErrorLog(received string, message string, err string, code int, route string) *ErrorLog {
+func NewErrorLog(message string, err string, code int, route string) *ErrorLog {
 
 	var log = new(ErrorLog)
 	log.Date = time.Now()
-	log.Received = received
 	log.Message = message
 	log.Error = err
 	log.Code = code
 	log.Route = route
 
 	return log
+}
+
+// Create new log entry in the database, the ID of the object passed is populated.
+func (log *ErrorLog) CreateDB(db *gorm.DB) error {
+	var conn = db.Create(log)
+	if conn.Error != nil {
+		return conn.Error
+	}
+
+	return nil
 }
