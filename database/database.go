@@ -15,7 +15,12 @@ var DB *gorm.DB
 
 // Create database
 func Create() {
-	Connect()
+	var err error = Connect()
+	if err != nil {
+		logger.Fatal("Error connecting to the database.", err.Error())
+	}
+
+	logger.Info("Migrating database structure.")
 
 	// Create databases
 	ErrorLogMigrate(DB)
@@ -24,15 +29,14 @@ func Create() {
 }
 
 // Connect to the SQL database using the configuration specified.
-func Connect() {
+func Connect() error {
 	var err error
 	DB, err = gorm.Open(global.Config.Database.Dialect, global.Config.Database.ConnectionString)
 	if err != nil {
-		logger.Fatal("Error connecting to the SQL server.", err.Error())
-		return
+		return err
 	}
 
-	Create()
+	return nil
 }
 
 // Close the database db, should be called before exiting the application.

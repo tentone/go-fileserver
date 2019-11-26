@@ -28,6 +28,8 @@ func LoadVersion(path string) {
 	if err != nil {
 		logger.Fatal("Failed to parse the version file.", path, err)
 	}
+
+	logger.Info("Loaded version file.")
 }
 
 // Structure to represent the version of the server

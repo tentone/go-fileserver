@@ -13,4 +13,5 @@ func StartLogger(path string) {
 	}
 
 	logger.Init("GoDonkey", true, true, file)
+	logger.Info("Resource server starting up")
 }

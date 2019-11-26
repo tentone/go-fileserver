@@ -36,6 +36,8 @@ func LoadConfig(path string) {
 	if err != nil {
 		logger.Fatal("Failed to parse the configuration file.", path, err)
 	}
+
+	logger.Info("Loaded configuration file.")
 }
 
 // General configuration structure, containing all parameters.

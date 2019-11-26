@@ -10,6 +10,7 @@ func main() {
 	global.StartLogger("server.log")
 	global.LoadVersion("version.json")
 	global.LoadConfig("config.json")
+
 	database.Create()
 	server.ServerStart()
 }

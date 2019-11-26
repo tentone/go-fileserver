@@ -16,6 +16,8 @@ import (
 
 // Start the server using data from the configurations structures provided.
 func ServerStart() {
+	logger.Info("Starting API server")
+
 	var router = RouterCreate()
 	var err error
 
@@ -39,6 +41,7 @@ func ServerStart() {
 			Handler: router,
 		}
 
+		logger.Info("Started HTTPS/H2 server on " + server.Addr)
 		err = server.ListenAndServeTLS(global.Config.Server.CertFileTLS, global.Config.Server.KeyFileTLS)
 		if err != nil {
 			logger.Fatal("Failed to start HTTPS/H2 server.")
@@ -51,6 +54,8 @@ func ServerStart() {
 			Addr: global.Config.Server.Address,
 			Handler: router,
 		}
+		
+		logger.Info("Started HTTP server on " + server.Addr)
 		err = server.ListenAndServe()
 		if err != nil {
 			logger.Fatal("Failed to start HTTP server.")
