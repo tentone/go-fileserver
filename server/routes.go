@@ -17,6 +17,7 @@ type Routes []Route
 
 // Declaration of the routes available in the API
 var routes = Routes{
+
 	Route{"GET", "/v1/resource/get/{library}/{uuid}", api.ResourceGet},
 	Route{"POST", "/v1/resource/upload", api.ResourceUpload},
 }
