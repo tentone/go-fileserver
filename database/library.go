@@ -21,14 +21,16 @@ type Library struct {
 	Type int `gorm:"type:column:type" json:"type"`
 }
 
-
 func LibraryMigrate(db *gorm.DB) {
+
 	db.SingularTable(true)
 	db.AutoMigrate(&Library{})
 }
 
-func NewLibrary() *Library {
-	var l = new(Library)
+func NewLibrary(path string, _type int) *Library {
 
+	var l = new(Library)
+	l.Path = path
+	l.Type = _type
 	return l
 }
