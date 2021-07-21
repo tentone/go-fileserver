@@ -1,5 +1,5 @@
-# Go Donkey
-- GoDonkey resource is a Go lang based REST resource server to store and load files.
+# Go File Server
+- Go HTTP file server for REST resource to store and load files.
 - Utils to convert file formats, resize and cache images, store folders, generate zip files etc.
 
 
@@ -18,17 +18,9 @@
 
 ### Data Storage
 
-- Data is stored as files, using the UUID identifier (lowercase) as file name and the correct file format extension (lowercase).
+- Data is stored as files, using the UUID identifier as file name and the correct file format extension.
 - Files are organized in library folders, each library should contains a different type of data (images, videos, documents, etc).
-- The platform relies on the filesystem to index and access all data quickly.
-
-
-
-### Data Indexing
-
-- Stored resources can be indexed in the SQL database associated, there are two types of indexation available.
-  - Temporal indexation
-  - Spatial indexation
+- The platform relies on the file system to index and access all data quickly.
 
 
 
@@ -42,7 +34,8 @@
 
 ### Performance
 
-- The performance of fasthttp and node.js express on http 1.x was compared against the performance of net/http running on http 2.0.
+- Go was selected based on its performance, we compared multiple solutions using other languages and frameworks and decided that go with net/http was the best compromise between speed and complexity.
+- The table bellow presents the performance of fasthttp, node.js express on HTTP 1.x compared against the performance of net/http running on HTTP 1.X and 2.0.
 
 
 
