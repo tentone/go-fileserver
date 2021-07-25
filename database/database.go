@@ -2,12 +2,9 @@ package database
 
 import (
 	"github.com/google/logger"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mssql"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"github.com/tentone/godonkey/global"
+	"gorm.io/gorm"
+	"gorm.io/driver/sqlite"
+	"github.com/tentone/go-fileserver/global"
 )
 
 // GORM database object, used to access data and perform operations.
@@ -31,7 +28,7 @@ func Create() {
 // Connect to the SQL database using the configuration specified.
 func Connect() error {
 	var err error
-	DB, err = gorm.Open(global.Config.Database.Dialect, global.Config.Database.ConnectionString)
+	DB, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{}) // global.Config.Database.Dialect, global.Config.Database.ConnectionString)
 	if err != nil {
 		return err
 	}

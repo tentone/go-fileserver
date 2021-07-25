@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/google/logger"
-	"github.com/tentone/godonkey/database"
+	"github.com/tentone/go-fileserver/database"
 	"net/http"
 )
 

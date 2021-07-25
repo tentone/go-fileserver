@@ -7,7 +7,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"github.com/google/logger"
-	"github.com/tentone/godonkey/global"
+	"github.com/tentone/go-fileserver/global"
 	"io/ioutil"
 	"math/big"
 	"net/http"

@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/tentone/godonkey/global"
+	"github.com/tentone/go-fileserver/global"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"

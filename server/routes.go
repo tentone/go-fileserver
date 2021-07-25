@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/tentone/godonkey/server/api"
+	"github.com/tentone/go-fileserver/server/api"
 	"net/http"
 )
 

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/tentone/godonkey/database"
-	"github.com/tentone/godonkey/global"
-	"github.com/tentone/godonkey/server"
+	"github.com/tentone/go-fileserver/database"
+	"github.com/tentone/go-fileserver/global"
+	"github.com/tentone/go-fileserver/server"
 )
 
 func main() {
