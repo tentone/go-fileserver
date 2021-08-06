@@ -40,7 +40,7 @@ func Connect() error {
 func Close() {
 	var err = DB.Close()
 	if err != nil {
-		logger.Fatal("Error closing connection to the SQL server.", err.Error())
+		logger.Fatal("Error closing connection to the SQL api.", err.Error())
 		return
 	}
 }

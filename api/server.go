@@ -1,4 +1,4 @@
-package server
+package api
 
 import (
 	"crypto/rand"
@@ -14,9 +14,9 @@ import (
 	"time"
 )
 
-// Start the server using data from the configurations structures provided.
+// Start the api using data from the configurations structures provided.
 func ServerStart() {
-	logger.Info("Starting API server")
+	logger.Info("Starting API api")
 
 	var router = RouterCreate()
 	var err error
@@ -34,31 +34,31 @@ func ServerStart() {
 		_ = ioutil.WriteFile(global.Config.Server.KeyFileTLS, privateKey, 0644)
 	}
 
-	// Start the server with TLS, since we are running HTTP/2 it must be run with TLS.
+	// Start the api with TLS, since we are running HTTP/2 it must be run with TLS.
 	if len(global.Config.Server.AddressTLS) > 0 {
 		var server http.Server = http.Server{
 			Addr:    global.Config.Server.AddressTLS,
 			Handler: router,
 		}
 
-		logger.Info("Started HTTPS/H2 server on " + server.Addr)
+		logger.Info("Started HTTPS/H2 api on " + server.Addr)
 		err = server.ListenAndServeTLS(global.Config.Server.CertFileTLS, global.Config.Server.KeyFileTLS)
 		if err != nil {
-			logger.Fatal("Failed to start HTTPS/H2 server.")
+			logger.Fatal("Failed to start HTTPS/H2 api.")
 		}
 	}
 
-	// Start the server using HTTP
+	// Start the api using HTTP
 	if len(global.Config.Server.Address) > 0 {
 		var server http.Server = http.Server{
 			Addr:    global.Config.Server.Address,
 			Handler: router,
 		}
 
-		logger.Info("Started HTTP server on " + server.Addr)
+		logger.Info("Started HTTP api on " + server.Addr)
 		err = server.ListenAndServe()
 		if err != nil {
-			logger.Fatal("Failed to start HTTP server.")
+			logger.Fatal("Failed to start HTTP api.")
 		}
 	}
 }

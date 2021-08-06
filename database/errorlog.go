@@ -7,7 +7,7 @@ import (
 
 // Used to store in the database logs of the errors from API calls to the platform.
 //
-// Is created when the user receives a bad response from the server, also show the error ID to the user for debug later.
+// Is created when the user receives a bad response from the api, also show the error ID to the user for debug later.
 type ErrorLog struct {
 	NumID
 

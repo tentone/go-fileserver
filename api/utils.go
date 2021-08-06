@@ -23,7 +23,7 @@ func LogAPIError(writer http.ResponseWriter, request *http.Request, message stri
 		logger.Error("Error trying to log error database." + " [" + err.Error() + "]")
 	}
 
-	// Write to the server log
+	// Write to the api log
 	logger.Error(message + " [" + errorDetails + "]")
 
 	writer.WriteHeader(status)

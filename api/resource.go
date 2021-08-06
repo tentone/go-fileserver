@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// Get a resource from the server
+// Get a resource from the api
 func ResourceGet(writer http.ResponseWriter, request *http.Request) {
 	// Form data
 	var variables = mux.Vars(request)
@@ -39,7 +39,7 @@ func ResourceGet(writer http.ResponseWriter, request *http.Request) {
 	writer.WriteHeader(http.StatusOK)
 }
 
-// Upload a new resource to the server.
+// Upload a new resource to the api.
 func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
 	var uuid = request.FormValue("uuid")
 	var library = request.FormValue("library")

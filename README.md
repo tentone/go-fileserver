@@ -4,6 +4,14 @@
 
 
 
+### Setup
+
+- Download and install go on your computer, prepare a configuration file.
+- The configuration file contains all the parameters necessary to run the server.
+- Run the server code.
+
+
+
 ### Usage
 
 - Data is organized in libraries, each library is stored in a different data folder and has different content.
@@ -21,14 +29,6 @@
 - Data is stored as files, using the UUID identifier as file name and the correct file format extension.
 - Files are organized in library folders, each library should contains a different type of data (images, videos, documents, etc).
 - The platform relies on the file system to index and access all data quickly.
-
-
-
-### Setup
-
-- Install go on your machine, prepare a configuration file.
-- The configuration file contains all the parameters necessary to run the server.
-- Run the server code.
 
 
 

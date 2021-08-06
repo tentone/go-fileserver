@@ -15,7 +15,7 @@ const POSTGRES string = "postgres"
 const FILE string = "file"
 const FTP string = "ftp"
 
-// Global configuration of the server.
+// Global configuration of the api.
 var Config ConfigStruct = ConfigStruct{}
 
 // Read configuration from file
@@ -42,7 +42,7 @@ func LoadConfig(path string) {
 
 // General configuration structure, containing all parameters.
 type ConfigStruct struct {
-	Server          ServerConfig     `json:"server"`
+	Server          ServerConfig     `json:"api"`
 	Database        DatabaseConfig   `json:"database"`
 	FileServer      FileServerConfig `json:"fileServer"`
 	Storage         StorageConfig    `json:"storage"`
@@ -64,7 +64,7 @@ type DatabaseConfig struct {
 	ConnectionString string `json:"connectionString,omitempty"`
 }
 
-// File server specific configuration
+// File api specific configuration
 type FileServerConfig struct {
 	MaxUploadSize int64 `json:"maxUploadSize"`
 }

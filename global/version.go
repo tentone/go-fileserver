@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-// Version data of the server. Loaded from file updated when the project is built.
+// Version data of the api. Loaded from file updated when the project is built.
 var Version VersionStruct = VersionStruct{}
 
 // Read version information from file
@@ -32,7 +32,7 @@ func LoadVersion(path string) {
 	logger.Info("Loaded version file.")
 }
 
-// Structure to represent the version of the server
+// Structure to represent the version of the api
 type VersionStruct struct {
 	Version   string `json:"version"`
 	GitCommit string `json:"commit"`

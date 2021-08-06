@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// Start the server logger, create the log file and start its services.
+// Start the api logger, create the log file and start its services.
 func StartLogger(path string) {
 	var file, err = os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660)
 	if err != nil {
@@ -13,5 +13,5 @@ func StartLogger(path string) {
 	}
 
 	logger.Init("GoDonkey", true, true, file)
-	logger.Info("Resource server starting up")
+	logger.Info("Resource api starting up")
 }

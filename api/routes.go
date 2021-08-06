@@ -1,8 +1,8 @@
-package server
+package api
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/tentone/go-fileserver/server/api"
+	"github.com/tentone/go-fileserver/api/api"
 	"net/http"
 )
 
@@ -22,7 +22,7 @@ var routes = Routes{
 	Route{"POST", "/v1/resource/upload", api.ResourceUpload},
 }
 
-// Create a mux router object to server the API
+// Create a mux router object to api the API
 func RouterCreate() *mux.Router {
 	var router *mux.Router = mux.NewRouter().StrictSlash(true)
 
