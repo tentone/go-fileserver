@@ -8,8 +8,8 @@ import (
 
 // Structure to declare a route of the application
 type Route struct {
-	Type string
-	Path string
+	Type    string
+	Path    string
 	Handler http.HandlerFunc
 }
 
@@ -32,5 +32,3 @@ func RouterCreate() *mux.Router {
 
 	return router
 }
-
-

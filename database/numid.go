@@ -21,4 +21,3 @@ func NewNumID() NumID {
 
 	return u
 }
-

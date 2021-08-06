@@ -34,6 +34,6 @@ func LoadVersion(path string) {
 
 // Structure to represent the version of the server
 type VersionStruct struct {
-	Version string `json:"version"`
+	Version   string `json:"version"`
 	GitCommit string `json:"commit"`
 }

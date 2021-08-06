@@ -37,7 +37,7 @@ func ServerStart() {
 	// Start the server with TLS, since we are running HTTP/2 it must be run with TLS.
 	if len(global.Config.Server.AddressTLS) > 0 {
 		var server http.Server = http.Server{
-			Addr: global.Config.Server.AddressTLS,
+			Addr:    global.Config.Server.AddressTLS,
 			Handler: router,
 		}
 
@@ -51,10 +51,10 @@ func ServerStart() {
 	// Start the server using HTTP
 	if len(global.Config.Server.Address) > 0 {
 		var server http.Server = http.Server{
-			Addr: global.Config.Server.Address,
+			Addr:    global.Config.Server.Address,
 			Handler: router,
 		}
-		
+
 		logger.Info("Started HTTP server on " + server.Addr)
 		err = server.ListenAndServe()
 		if err != nil {
@@ -90,14 +90,14 @@ func GenerateCertificate(host string, organization string) ([]byte, []byte, erro
 		Subject: pkix.Name{
 			Organization: []string{organization},
 		},
-		NotBefore: time.Now(),
-		NotAfter: time.Now().Add(365 * 24 * time.Hour),
-		KeyUsage: x509.KeyUsageCertSign | x509.KeyUsageDigitalSignature,
-		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
-		SignatureAlgorithm: x509.SHA256WithRSA,
-		DNSNames: []string{host},
+		NotBefore:             time.Now(),
+		NotAfter:              time.Now().Add(365 * 24 * time.Hour),
+		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageDigitalSignature,
+		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
+		SignatureAlgorithm:    x509.SHA256WithRSA,
+		DNSNames:              []string{host},
 		BasicConstraintsValid: true,
-		IsCA: true,
+		IsCA:                  true,
 	}
 
 	var certBytes []byte
@@ -109,7 +109,7 @@ func GenerateCertificate(host string, organization string) ([]byte, []byte, erro
 	var p []byte
 	p = pem.EncodeToMemory(
 		&pem.Block{
-			Type: "PRIVATE KEY",
+			Type:  "PRIVATE KEY",
 			Bytes: x509.MarshalPKCS1PrivateKey(priv),
 		},
 	)
@@ -117,11 +117,10 @@ func GenerateCertificate(host string, organization string) ([]byte, []byte, erro
 	var b []byte
 	b = pem.EncodeToMemory(
 		&pem.Block{
-			Type: "CERTIFICATE",
+			Type:  "CERTIFICATE",
 			Bytes: certBytes,
 		},
 	)
 
 	return b, p, nil
 }
-

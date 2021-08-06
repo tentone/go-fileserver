@@ -42,25 +42,25 @@ func LoadConfig(path string) {
 
 // General configuration structure, containing all parameters.
 type ConfigStruct struct {
-	Server ServerConfig `json:"server"`
-	Database DatabaseConfig `json:"database"`
-	FileServer FileServerConfig `json:"fileServer"`
-	Storage StorageConfig `json:"storage"`
-	DevelopmentMode bool `json:"developmentMode"`
+	Server          ServerConfig     `json:"server"`
+	Database        DatabaseConfig   `json:"database"`
+	FileServer      FileServerConfig `json:"fileServer"`
+	Storage         StorageConfig    `json:"storage"`
+	DevelopmentMode bool             `json:"developmentMode"`
 }
 
 // HTTP Server related configuration parameters
 type ServerConfig struct {
-	Address string `json:"address,omitempty"`
-	AddressTLS string `json:"addressTLS,omitempty"`
-	CertFileTLS string `json:"certFileTLS,omitempty"`
-	KeyFileTLS string `json:"keyFileTLS,omitempty"`
-	GenerateCertTLS bool `json:"generateCertTLS,omitempty"`
+	Address         string `json:"address,omitempty"`
+	AddressTLS      string `json:"addressTLS,omitempty"`
+	CertFileTLS     string `json:"certFileTLS,omitempty"`
+	KeyFileTLS      string `json:"keyFileTLS,omitempty"`
+	GenerateCertTLS bool   `json:"generateCertTLS,omitempty"`
 }
 
 // Database access configuration
 type DatabaseConfig struct {
-	Dialect string `json:"dialect"`
+	Dialect          string `json:"dialect"`
 	ConnectionString string `json:"connectionString,omitempty"`
 }
 

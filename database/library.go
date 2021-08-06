@@ -15,7 +15,7 @@ type Library struct {
 	// Path of the library, unique used to describe the library
 	//
 	// Path of the library is directly mapped to its folder in the filesystem
-	Path string	`gorm:"type:varchar(255);unique;column:path" json:"path"`
+	Path string `gorm:"type:varchar(255);unique;column:path" json:"path"`
 
 	// Type of the library
 	Type int `gorm:"type:column:type" json:"type"`

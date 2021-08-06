@@ -2,9 +2,9 @@ package database
 
 import (
 	"github.com/google/logger"
-	"gorm.io/gorm"
+	_ "github.com/tentone/go-fileserver/global"
 	"gorm.io/driver/sqlite"
-	"github.com/tentone/go-fileserver/global"
+	"gorm.io/gorm"
 )
 
 // GORM database object, used to access data and perform operations.
