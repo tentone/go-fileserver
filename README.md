@@ -34,7 +34,7 @@
 
 ### Performance
 
-- Go was selected based on its performance, we compared multiple solutions using other languages and frameworks and decided that go with net/http was the best compromise between speed and complexity.
+- Go was selected based on its performance, we compared some solutions using other languages and frameworks and decided that go with net/http was the best compromise between speed and complexity.
 - The table bellow presents the performance of fasthttp, node.js express on HTTP 1.x compared against the performance of net/http running on HTTP 1.X and 2.0.
 
 

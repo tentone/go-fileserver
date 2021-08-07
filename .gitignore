@@ -20,3 +20,5 @@ local.crt
 local.key
 
 database.db
+
+go.sum
