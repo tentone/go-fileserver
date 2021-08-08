@@ -1,8 +1,7 @@
-package api
+package source
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/tentone/go-fileserver/api/api"
 	"net/http"
 )
 
@@ -18,8 +17,8 @@ type Routes []Route
 // Declaration of the routes available in the API
 var routes = Routes{
 
-	Route{"GET", "/v1/resource/get/{library}/{uuid}", api.ResourceGet},
-	Route{"POST", "/v1/resource/upload", api.ResourceUpload},
+	Route{"GET", "/v1/resource/get/{library}/{uuid}", ResourceGet},
+	Route{"POST", "/v1/resource/upload", ResourceUpload},
 }
 
 // Create a mux router object to api the API

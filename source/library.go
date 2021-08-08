@@ -1,4 +1,4 @@
-package database
+package source
 
 import "gorm.io/gorm"
 
@@ -22,15 +22,13 @@ type Library struct {
 }
 
 func LibraryMigrate(db *gorm.DB) {
-
 	db.SingularTable(true)
 	db.AutoMigrate(&Library{})
 }
 
 func NewLibrary(path string, _type int) *Library {
-
-	var l = new(Library)
-	l.Path = path
-	l.Type = _type
-	return l
+	return &Library{
+		Path: path,
+		Type: _type,
+	}
 }

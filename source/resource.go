@@ -1,14 +1,70 @@
-package api
+package source
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/tentone/go-fileserver/global"
+	"gorm.io/gorm"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"strings"
 )
+
+type Resource struct {
+	NumID
+
+	// UUID of the resource
+	UUID string `gorm:"type:varchar(36)unique;column:uuid" json:"uuid"`
+
+	// File encoding format
+	Format string `gorm:"column:format" json:"format"`
+}
+
+func ResourceMigrate(db *gorm.DB) {
+	db.SingularTable(true)
+	db.AutoMigrate(&Resource{})
+}
+
+func NewResource(uuid string, format string) *Resource {
+	var r = new(Resource)
+	r.UUID = uuid
+	r.Format = format
+	return r
+}
+
+func (resource *Resource) StoreDB(db *gorm.DB) error {
+	var conn = db.Save(resource)
+	if conn.Error != nil {
+		return conn.Error
+	}
+	return nil
+}
+
+// Get resources from its numeric ID.
+func GetResourceByIDDB(db *gorm.DB, id uint) (a *Resource, e error) {
+
+	var resource *Resource = new(Resource)
+
+	var conn = db.Where("id = ?", id).First(resource)
+	if conn.Error != nil {
+		return nil, conn.Error
+	}
+	return resource, nil
+}
+
+// Get resource from its UUID.
+func GetResourceByUuidDB(db *gorm.DB, uuid string) (a *Resource, e error) {
+
+	var resource *Resource = new(Resource)
+
+	var conn = db.Where("uuid = ?", uuid).First(resource)
+	if conn.Error != nil {
+		return nil, conn.Error
+	}
+
+	return resource, nil
+}
+
 
 // Get a resource from the api
 func ResourceGet(writer http.ResponseWriter, request *http.Request) {
@@ -17,7 +73,7 @@ func ResourceGet(writer http.ResponseWriter, request *http.Request) {
 	var library string = variables["library"]
 	var uuid string = variables["uuid"]
 
-	var path string = global.Config.Storage.Path + "/" + strings.ToLower(library) + "/" + strings.ToLower(uuid)
+	var path string = Config.Storage.Path + "/" + strings.ToLower(library) + "/" + strings.ToLower(uuid)
 
 	// Read file
 	var err error
@@ -45,7 +101,7 @@ func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
 	var library = request.FormValue("library")
 	var format = request.FormValue("format")
 
-	var path string = global.Config.Storage.Path + "/" + strings.ToLower(library)
+	var path string = Config.Storage.Path + "/" + strings.ToLower(library)
 
 	// Check if path exists and create if necessary
 	var err error
@@ -63,8 +119,8 @@ func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
 	var fpath string = strings.ToLower(path) + "/" + strings.ToLower(uuid) + "." + format
 
 	// Read request data
-	request.Body = http.MaxBytesReader(writer, request.Body, global.Config.FileServer.MaxUploadSize)
-	err = request.ParseMultipartForm(global.Config.FileServer.MaxUploadSize)
+	request.Body = http.MaxBytesReader(writer, request.Body, Config.FileServer.MaxUploadSize)
+	err = request.ParseMultipartForm(Config.FileServer.MaxUploadSize)
 	if err != nil {
 		_, _ = writer.Write([]byte("Cannot read data from the request form."))
 		writer.WriteHeader(http.StatusInternalServerError)

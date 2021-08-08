@@ -1,10 +1,21 @@
-package api
+package source
 
 import (
 	"github.com/google/logger"
-	"github.com/tentone/go-fileserver/database"
 	"net/http"
+	"os"
 )
+
+// Start the api logger, create the log file and start its services.
+func StartLogger(path string) {
+	var file, err = os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660)
+	if err != nil {
+		logger.Fatalf("Failed to open log file " + path)
+	}
+
+	logger.Init("GoDonkey", true, true, file)
+	logger.Info("Resource api starting up")
+}
 
 // Log API error into the database and system log and set the error message as response of the request.
 func LogAPIError(writer http.ResponseWriter, request *http.Request, message string, status int, err error) {

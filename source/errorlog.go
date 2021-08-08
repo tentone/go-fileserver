@@ -1,4 +1,4 @@
-package database
+package source
 
 import (
 	"gorm.io/gorm"
@@ -33,7 +33,6 @@ func ErrorLogMigrate(db *gorm.DB) {
 }
 
 func NewErrorLog(message string, err string, code int, route string) *ErrorLog {
-
 	var log = new(ErrorLog)
 	log.Date = time.Now()
 	log.Message = message

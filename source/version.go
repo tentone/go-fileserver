@@ -1,4 +1,4 @@
-package global
+package source
 
 import (
 	"encoding/json"
@@ -6,6 +6,12 @@ import (
 	"io/ioutil"
 	"os"
 )
+
+// Structure to represent the version of the api
+type VersionStruct struct {
+	Version   string `json:"version"`
+	GitCommit string `json:"commit"`
+}
 
 // Version data of the api. Loaded from file updated when the project is built.
 var Version VersionStruct = VersionStruct{}
@@ -32,8 +38,3 @@ func LoadVersion(path string) {
 	logger.Info("Loaded version file.")
 }
 
-// Structure to represent the version of the api
-type VersionStruct struct {
-	Version   string `json:"version"`
-	GitCommit string `json:"commit"`
-}

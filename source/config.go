@@ -1,4 +1,4 @@
-package global
+package source
 
 import (
 	"encoding/json"
@@ -6,14 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 )
-
-const MSSQL string = "mssql"
-const SQLITE string = "sqlite3"
-const MYSQL string = "mysql"
-const POSTGRES string = "postgres"
-
-const FILE string = "file"
-const FTP string = "ftp"
 
 // Global configuration of the api.
 var Config ConfigStruct = ConfigStruct{}

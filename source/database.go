@@ -1,8 +1,7 @@
-package database
+package source
 
 import (
 	"github.com/google/logger"
-	_ "github.com/tentone/go-fileserver/global"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -28,7 +27,7 @@ func Create() {
 // Connect to the SQL database using the configuration specified.
 func Connect() error {
 	var err error
-	DB, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{}) // global.Config.Database.Dialect, global.Config.Database.ConnectionString)
+	DB, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{}) // Config.Database.Dialect, Config.Database.ConnectionString)
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-package api
+package source
 
 import (
 	"crypto/rand"
@@ -7,7 +7,6 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"github.com/google/logger"
-	"github.com/tentone/go-fileserver/global"
 	"io/ioutil"
 	"math/big"
 	"net/http"
@@ -22,7 +21,7 @@ func ServerStart() {
 	var err error
 
 	// Generate certificate for localhost
-	if global.Config.Server.GenerateCertTLS {
+	if Config.Server.GenerateCertTLS {
 		var cert, privateKey []byte
 		cert, privateKey, err = GenerateCertificate("localhost", "Local")
 		if err != nil {
@@ -30,28 +29,28 @@ func ServerStart() {
 		}
 
 		// Write certificate files
-		_ = ioutil.WriteFile(global.Config.Server.CertFileTLS, cert, 0644)
-		_ = ioutil.WriteFile(global.Config.Server.KeyFileTLS, privateKey, 0644)
+		_ = ioutil.WriteFile(Config.Server.CertFileTLS, cert, 0644)
+		_ = ioutil.WriteFile(Config.Server.KeyFileTLS, privateKey, 0644)
 	}
 
 	// Start the api with TLS, since we are running HTTP/2 it must be run with TLS.
-	if len(global.Config.Server.AddressTLS) > 0 {
+	if len(Config.Server.AddressTLS) > 0 {
 		var server http.Server = http.Server{
-			Addr:    global.Config.Server.AddressTLS,
+			Addr:    Config.Server.AddressTLS,
 			Handler: router,
 		}
 
 		logger.Info("Started HTTPS/H2 api on " + server.Addr)
-		err = server.ListenAndServeTLS(global.Config.Server.CertFileTLS, global.Config.Server.KeyFileTLS)
+		err = server.ListenAndServeTLS(Config.Server.CertFileTLS, Config.Server.KeyFileTLS)
 		if err != nil {
 			logger.Fatal("Failed to start HTTPS/H2 api.")
 		}
 	}
 
 	// Start the api using HTTP
-	if len(global.Config.Server.Address) > 0 {
+	if len(Config.Server.Address) > 0 {
 		var server http.Server = http.Server{
-			Addr:    global.Config.Server.Address,
+			Addr:    Config.Server.Address,
 			Handler: router,
 		}
 
