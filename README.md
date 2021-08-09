@@ -11,6 +11,17 @@
 - Run the server code.
 
 
+### TODO
+ - Convert images (png, jpeg, gif, etc)
+ - Process images (resize, rotate, crop, etc) 
+ - Convert audio (mp3, wav, ogg, etc)
+ - Convert text files (xml, json, etc)
+
+
+### References
+ - Image Converter: https://github.com/sunshineplan/imgconv
+ - Beep Audio Lib: https://github.com/faiface/beep
+
 
 ### Usage
 
