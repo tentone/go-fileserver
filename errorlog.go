@@ -32,14 +32,13 @@ func ErrorLogMigrate(db *gorm.DB) {
 }
 
 func NewErrorLog(message string, err string, code int, route string) *ErrorLog {
-	var log = new(ErrorLog)
-	log.Date = time.Now()
-	log.Message = message
-	log.Error = err
-	log.Code = code
-	log.Route = route
-
-	return log
+	return &ErrorLog{
+		Date: time.Now(),
+		Message: message,
+		Error: err,
+		Code: code,
+		Route: route,
+	}
 }
 
 // Create new log entry in the database, the ID of the object passed is populated.

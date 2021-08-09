@@ -17,7 +17,5 @@ type NumID struct {
 }
 
 func NewNumID() NumID {
-	var u = NumID{}
-
-	return u
+	return NumID{}
 }

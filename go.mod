@@ -2,8 +2,6 @@ module github.com/tentone/go-fileserver
 
 go 1.16
 
-replace github.com/tentone/go-fileserver => ./
-
 require (
 	github.com/gorilla/mux v1.7.4
 	gorm.io/driver/sqlite v1.1.4
