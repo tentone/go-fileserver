@@ -1,8 +1,7 @@
-package source
+package main
 
 import (
 	"encoding/json"
-	"github.com/google/logger"
 	"io/ioutil"
 	"os"
 )
@@ -24,7 +23,7 @@ func LoadVersion(path string) {
 	var file *os.File
 	file, err = os.Open(path)
 	if err != nil {
-		logger.Fatal("Failed to read the version file.", path, err)
+		print("Failed to read the version file.", path, err)
 	}
 
 	// Unmarshal json data
@@ -32,9 +31,9 @@ func LoadVersion(path string) {
 	data, err = ioutil.ReadAll(file)
 	err = json.Unmarshal(data, &Version)
 	if err != nil {
-		logger.Fatal("Failed to parse the version file.", path, err)
+		print("Failed to parse the version file.", path, err)
 	}
 
-	logger.Info("Loaded version file.")
+	print("Loaded version file.")
 }
 

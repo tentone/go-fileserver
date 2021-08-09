@@ -1,7 +1,6 @@
-package source
+package main
 
 func main() {
-	StartLogger("api.log")
 	LoadVersion("version.json")
 	LoadConfig("config.json")
 

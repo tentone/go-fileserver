@@ -1,8 +1,7 @@
-package source
+package main
 
 import (
 	"encoding/json"
-	"github.com/google/logger"
 	"io/ioutil"
 	"os"
 )
@@ -18,7 +17,7 @@ func LoadConfig(path string) {
 	var file *os.File
 	file, err = os.Open(path)
 	if err != nil {
-		logger.Fatal("Failed to read the configuration file.", path, err)
+		print("Failed to read the configuration file.", path, err)
 	}
 
 	// Unmarshal json data
@@ -26,10 +25,10 @@ func LoadConfig(path string) {
 	data, err = ioutil.ReadAll(file)
 	err = json.Unmarshal(data, &Config)
 	if err != nil {
-		logger.Fatal("Failed to parse the configuration file.", path, err)
+		print("Failed to parse the configuration file.", path, err)
 	}
 
-	logger.Info("Loaded configuration file.")
+	print("Loaded configuration file.")
 }
 
 // General configuration structure, containing all parameters.

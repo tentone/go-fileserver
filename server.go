@@ -1,4 +1,4 @@
-package source
+package main
 
 import (
 	"crypto/rand"
@@ -6,7 +6,6 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
-	"github.com/google/logger"
 	"io/ioutil"
 	"math/big"
 	"net/http"
@@ -15,7 +14,7 @@ import (
 
 // Start the api using data from the configurations structures provided.
 func ServerStart() {
-	logger.Info("Starting API api")
+	print("Starting API api")
 
 	var router = RouterCreate()
 	var err error
@@ -25,7 +24,7 @@ func ServerStart() {
 		var cert, privateKey []byte
 		cert, privateKey, err = GenerateCertificate("localhost", "Local")
 		if err != nil {
-			logger.Fatal("Failed to generate certificate file.")
+			print("Failed to generate certificate file.")
 		}
 
 		// Write certificate files
@@ -40,10 +39,10 @@ func ServerStart() {
 			Handler: router,
 		}
 
-		logger.Info("Started HTTPS/H2 api on " + server.Addr)
+		print("Started HTTPS/H2 api on " + server.Addr)
 		err = server.ListenAndServeTLS(Config.Server.CertFileTLS, Config.Server.KeyFileTLS)
 		if err != nil {
-			logger.Fatal("Failed to start HTTPS/H2 api.")
+			print("Failed to start HTTPS/H2 api.")
 		}
 	}
 
@@ -54,10 +53,10 @@ func ServerStart() {
 			Handler: router,
 		}
 
-		logger.Info("Started HTTP api on " + server.Addr)
+		print("Started HTTP api on " + server.Addr)
 		err = server.ListenAndServe()
 		if err != nil {
-			logger.Fatal("Failed to start HTTP api.")
+			print("Failed to start HTTP api.")
 		}
 	}
 }

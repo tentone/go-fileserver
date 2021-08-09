@@ -1,4 +1,4 @@
-package source
+package main
 
 import (
 	"github.com/gorilla/mux"
@@ -21,15 +21,14 @@ type Resource struct {
 }
 
 func ResourceMigrate(db *gorm.DB) {
-	db.SingularTable(true)
-	db.AutoMigrate(&Resource{})
+	_ = db.AutoMigrate(&Resource{})
 }
 
 func NewResource(uuid string, format string) *Resource {
-	var r = new(Resource)
-	r.UUID = uuid
-	r.Format = format
-	return r
+	return &Resource{
+		UUID: uuid,
+		Format: format,
+	}
 }
 
 func (resource *Resource) StoreDB(db *gorm.DB) error {

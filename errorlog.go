@@ -1,4 +1,4 @@
-package source
+package main
 
 import (
 	"gorm.io/gorm"
@@ -28,8 +28,7 @@ type ErrorLog struct {
 }
 
 func ErrorLogMigrate(db *gorm.DB) {
-	db.SingularTable(true)
-	db.AutoMigrate(&ErrorLog{})
+	_ = db.AutoMigrate(&ErrorLog{})
 }
 
 func NewErrorLog(message string, err string, code int, route string) *ErrorLog {
