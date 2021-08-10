@@ -1,8 +1,9 @@
 package main
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 // Used to store in the database logs of the errors from API calls to the platform.
@@ -17,9 +18,6 @@ type ErrorLog struct {
 	// API route requested that caused the problem
 	Route string `gorm:"column:route;type:text" json:"route"`
 
-	// Error message (as shown to the user)
-	Message string `gorm:"column:message;type:text" json:"message"`
-
 	// Error details that caused the problem
 	Error string `gorm:"column:error;type:text" json:"error"`
 
@@ -33,10 +31,9 @@ func ErrorLogMigrate(db *gorm.DB) {
 
 func NewErrorLog(message string, err string, code int, route string) *ErrorLog {
 	return &ErrorLog{
-		Date: time.Now(),
-		Message: message,
+		Date:  time.Now(),
 		Error: err,
-		Code: code,
+		Code:  code,
 		Route: route,
 	}
 }

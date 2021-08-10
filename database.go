@@ -1,13 +1,14 @@
 package main
 
 import (
+	"log"
+	"os"
+	"time"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"log"
-	"os"
-	"time"
 )
 
 // GORM database object, used to access data and perform operations.
@@ -37,7 +38,6 @@ func Initialize() {
 	ResourceMigrate(db)
 }
 
-
 // Connect to the SQL database using the configuration specified.
 func Connect() error {
 	var logg = logger.New(
@@ -49,24 +49,21 @@ func Connect() error {
 		},
 	)
 
-
 	var cfg = &gorm.Config{
 		CreateBatchSize:                          1000,
 		SkipDefaultTransaction:                   false,
-		DisableForeignKeyConstraintWhenMigrating: true,
+		DisableForeignKeyConstraintWhenMigrating: false,
 		DisableAutomaticPing:                     true,
-		FullSaveAssociations:                     false,
+		FullSaveAssociations:                     true,
 		NamingStrategy:                           schema.NamingStrategy{TablePrefix: "", SingularTable: true},
 		Logger:                                   logg,
 	}
-
 
 	var err error
 	db, err = gorm.Open(sqlite.Open("database.db"), cfg)
 	if err != nil {
 		panic("failed to connect database")
 	}
-
 
 	return nil
 }

@@ -1,22 +1,26 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
-	"gorm.io/gorm"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 )
 
 type Resource struct {
-	NumID
+	gorm.Model
+
+	// Library where the resource belongs
+	Library Library `gorm:"foreignKey:id;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
 	// UUID of the resource
 	UUID string `gorm:"type:varchar(36)unique;column:uuid" json:"uuid"`
 
-	// File encoding format
+	// File encoding format (e.g. png, jpeg, mp3, wav, mp4)
 	Format string `gorm:"column:format" json:"format"`
 }
 
@@ -26,7 +30,7 @@ func ResourceMigrate(db *gorm.DB) {
 
 func NewResource(uuid string, format string) *Resource {
 	return &Resource{
-		UUID: uuid,
+		UUID:   uuid,
 		Format: format,
 	}
 }
@@ -63,7 +67,6 @@ func GetResourceByUuidDB(db *gorm.DB, uuid string) (a *Resource, e error) {
 
 	return resource, nil
 }
-
 
 // Get a resource from the api
 func ResourceGet(writer http.ResponseWriter, request *http.Request) {
