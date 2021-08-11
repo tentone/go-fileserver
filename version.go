@@ -36,4 +36,3 @@ func LoadVersion(path string) {
 
 	print("Loaded version file.")
 }
-

@@ -25,7 +25,10 @@ type Resource struct {
 }
 
 func ResourceMigrate(db *gorm.DB) {
-	_ = db.AutoMigrate(&Resource{})
+	var err = db.AutoMigrate(&Resource{})
+	if err != nil {
+		print("Failed to migrate resource table.")
+	}
 }
 
 func NewResource(uuid string, format string) *Resource {

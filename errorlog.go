@@ -10,7 +10,7 @@ import (
 //
 // Is created when the user receives a bad response from the api, also show the error ID to the user for debug later.
 type ErrorLog struct {
-	NumID
+	gorm.Model
 
 	// Date and time of the error log
 	Date time.Time `gorm:"column:date" json:"date"`
@@ -26,7 +26,10 @@ type ErrorLog struct {
 }
 
 func ErrorLogMigrate(db *gorm.DB) {
-	_ = db.AutoMigrate(&ErrorLog{})
+	var err = db.AutoMigrate(&ErrorLog{})
+	if err != nil {
+		print("Failed to migrate error log table.")
+	}
 }
 
 func NewErrorLog(message string, err string, code int, route string) *ErrorLog {
