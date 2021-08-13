@@ -17,11 +17,11 @@ func ServerStart() {
 	print("Starting API api")
 
 	var router = RouterCreate()
-	var err error
 
 	// Generate certificate for localhost
 	if Config.Server.GenerateCertTLS {
 		var cert, privateKey []byte
+		var err error
 		cert, privateKey, err = GenerateCertificate("localhost", "Local")
 		if err != nil {
 			print("Failed to generate certificate file.")
@@ -40,7 +40,7 @@ func ServerStart() {
 		}
 
 		print("Started HTTPS/H2 api on " + server.Addr)
-		err = server.ListenAndServeTLS(Config.Server.CertFileTLS, Config.Server.KeyFileTLS)
+		var err = server.ListenAndServeTLS(Config.Server.CertFileTLS, Config.Server.KeyFileTLS)
 		if err != nil {
 			print("Failed to start HTTPS/H2 api.")
 		}
@@ -54,7 +54,7 @@ func ServerStart() {
 		}
 
 		print("Started HTTP api on " + server.Addr)
-		err = server.ListenAndServe()
+		var err = server.ListenAndServe()
 		if err != nil {
 			print("Failed to start HTTP api.")
 		}
