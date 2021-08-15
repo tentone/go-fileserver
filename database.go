@@ -33,7 +33,7 @@ func Create() {
 
 // Create database tables
 func Initialize() {
-	ErrorLogMigrate(db)
+	LogMigrate(db)
 	LibraryMigrate(db)
 	ResourceMigrate(db)
 }

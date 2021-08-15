@@ -18,13 +18,15 @@ var Version VersionStruct = VersionStruct{}
 func LoadVersion(path string) {
 	// Read data from file
 	var file *os.File
+	var err error
 	file, err = os.Open(path)
 	if err != nil {
 		print("Failed to read the version file.", path, err)
 	}
 
 	// Unmarshal json data
-	var data, err = ioutil.ReadAll(file)
+	var data []byte
+	data, err = ioutil.ReadAll(file)
 	err = json.Unmarshal(data, &Version)
 	if err != nil {
 		print("Failed to parse the version file.", path, err)
