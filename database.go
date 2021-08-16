@@ -53,7 +53,7 @@ func Connect() error {
 		CreateBatchSize:                          1000,
 		SkipDefaultTransaction:                   false,
 		DisableForeignKeyConstraintWhenMigrating: false,
-		DisableAutomaticPing:                     true,
+		DisableAutomaticPing:                     false,
 		FullSaveAssociations:                     true,
 		NamingStrategy:                           schema.NamingStrategy{TablePrefix: "", SingularTable: true},
 		Logger:                                   logg,
