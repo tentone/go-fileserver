@@ -15,7 +15,8 @@ type Resource struct {
 	gorm.Model
 
 	// Library where the resource belongs
-	Library Library `gorm:"foreignKey:id;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Library   Library `gorm:"foreignKey:id;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	LibraryID uint    `gorm:"column:library_id"`
 
 	// UUID of the resource
 	UUID string `gorm:"type:varchar(36)unique;column:uuid" json:"uuid"`
