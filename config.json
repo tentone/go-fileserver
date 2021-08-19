@@ -2,8 +2,8 @@
 	"server": {
 		"address": ":8000",
 		"addressTLS": ":9090",
-		"certFileTLS": "./local.crt",
-		"keyFileTLS": "./local.key",
+		"certFileTLS": "",
+		"keyFileTLS": "",
 		"generateCertTLS": true
 	},
 	"database": {
@@ -17,5 +17,5 @@
 		"mode": "file",
 		"path": "./data/"
 	},
-	"developmentMode": true
+	"development": true
 }
