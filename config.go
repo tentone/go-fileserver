@@ -10,14 +10,14 @@ import (
 var Config ConfigStruct = ConfigStruct{}
 
 // Read configuration from file
-func LoadConfig(path string) {
+func LoadConfig(path string) error {
 	var err error
 
 	// Read data from file
 	var file *os.File
 	file, err = os.Open(path)
 	if err != nil {
-		print("Failed to read the configuration file.", path, err)
+		return err
 	}
 
 	// Unmarshal json data
@@ -25,10 +25,10 @@ func LoadConfig(path string) {
 	data, err = ioutil.ReadAll(file)
 	err = json.Unmarshal(data, &Config)
 	if err != nil {
-		print("Failed to parse the configuration file.", path, err)
+		return err
 	}
 
-	print("Loaded configuration file.")
+	return nil
 }
 
 // General configuration structure, containing all parameters.

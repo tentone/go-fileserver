@@ -14,7 +14,7 @@ import (
 
 // Start the api using data from the configurations structures provided.
 func ServerStart() {
-	print("Starting API api")
+	print("Starting API")
 
 	var router = RegistryRouter()
 
