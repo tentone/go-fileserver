@@ -16,7 +16,7 @@ import (
 func ServerStart() {
 	print("Starting API api")
 
-	var router = RouterCreate()
+	var router = RegistryRouter()
 
 	// Generate certificate for localhost
 	if Config.Server.GenerateCertTLS {

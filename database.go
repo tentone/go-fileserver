@@ -19,27 +19,8 @@ func Get() *gorm.DB {
 	return db
 }
 
-// Create database
-func Create() {
-	var err error = Connect()
-	if err != nil {
-		print("Error connecting to the database.", err.Error())
-	}
-
-	print("Migrating database structure.")
-
-	Initialize()
-}
-
-// Create database tables
-func Initialize() {
-	LogMigrate(db)
-	LibraryMigrate(db)
-	ResourceMigrate(db)
-}
-
 // Connect to the SQL database using the configuration specified.
-func Connect() error {
+func ConnectDatabase() error {
 	var logg = logger.New(
 		log.New(os.Stdout, "\n", log.LstdFlags),
 		logger.Config{
@@ -62,23 +43,25 @@ func Connect() error {
 	var err error
 	db, err = gorm.Open(sqlite.Open("database.db"), cfg)
 	if err != nil {
-		panic("failed to connect database")
+		return err
 	}
 
 	return nil
 }
 
 // Close the database db, should be called before exiting the application.
-func Close() {
-	var sql, err = db.DB()
+func Close() error {
+	sql, err := db.DB()
 	if err != nil {
 		print("Error getting SQL db.")
-		return
+		return err
 	}
 
 	err = sql.Close()
 	if err != nil {
 		print("Error closing connection to the SQL server.")
-		return
+		return err
 	}
+
+	return nil
 }

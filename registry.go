@@ -1,21 +1,12 @@
 package main
 
-import (
-	"net/http"
+import "github.com/gorilla/mux"
 
-	"github.com/gorilla/mux"
-)
-
-// Structure to declare a route of the application
-type Route struct {
-	// Type of the API route.
-	Type string
-
-	// Path of the API.
-	Path string
-
-	// Handler to process the API call
-	Handler http.HandlerFunc
+// Create database tables
+func RegistryDatabaseMigrate() {
+	LogMigrate(db)
+	LibraryMigrate(db)
+	ResourceMigrate(db)
 }
 
 // Declaration of the routes available in the API
@@ -25,7 +16,7 @@ var routes []Route = []Route{
 }
 
 // Create a mux router object to api the API
-func RouterCreate() *mux.Router {
+func RegistryRouter() *mux.Router {
 	var router *mux.Router = mux.NewRouter().StrictSlash(true)
 
 	for _, value := range routes {
