@@ -23,5 +23,8 @@ func RegistryRouter() *mux.Router {
 		router.Methods(value.Type).Path(value.Path).Handler(value.Handler)
 	}
 
+	router.Use(HandleCORS)
+	router.Use(HandleOptions)
+
 	return router
 }
