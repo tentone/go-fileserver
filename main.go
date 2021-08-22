@@ -7,5 +7,7 @@ func main() {
 	ConnectDatabase()
 	RegistryDatabaseMigrate()
 
-	ServerStart()
+	StartHTTPServer()
+
+	select {}
 }

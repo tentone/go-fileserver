@@ -21,12 +21,16 @@ func LoadVersion(path string) {
 	var err error
 	file, err = os.Open(path)
 	if err != nil {
-		print("Failed to read the version file.", path, err)
+		print("Failed to open the version file.", path, err)
 	}
 
 	// Unmarshal json data
 	var data []byte
 	data, err = ioutil.ReadAll(file)
+	if err != nil {
+		print("Failed to read the version file.", path, err)
+	}
+
 	err = json.Unmarshal(data, &Version)
 	if err != nil {
 		print("Failed to parse the version file.", path, err)

@@ -13,7 +13,8 @@ import (
 )
 
 // Start the api using data from the configurations structures provided.
-func ServerStart() {
+func StartHTTPServer() {
+
 	print("Starting API")
 
 	var router = RegistryRouter()
@@ -34,30 +35,41 @@ func ServerStart() {
 
 	// Start the api with TLS, since we are running HTTP/2 it must be run with TLS.
 	if len(Config.Server.AddressTLS) > 0 {
-		var server http.Server = http.Server{
-			Addr:    Config.Server.AddressTLS,
-			Handler: router,
-		}
+		go func() {
+			var server http.Server = http.Server{
+				Addr:              Config.Server.AddressTLS,
+				Handler:           router,
+				ReadTimeout:       0,
+				ReadHeaderTimeout: 0,
+				WriteTimeout:      0,
+				IdleTimeout:       0,
+			}
 
-		print("Started HTTPS/H2 api on " + server.Addr)
-		var err = server.ListenAndServeTLS(Config.Server.CertFileTLS, Config.Server.KeyFileTLS)
-		if err != nil {
-			print("Failed to start HTTPS/H2 api.")
-		}
+			print("Started HTTPS/H2 api on " + server.Addr)
+			var err = server.ListenAndServeTLS(Config.Server.CertFileTLS, Config.Server.KeyFileTLS)
+			if err != nil {
+				print("Failed to start HTTPS/H2 api.")
+			}
+		}()
 	}
-
 	// Start the api using HTTP
 	if len(Config.Server.Address) > 0 {
-		var server http.Server = http.Server{
-			Addr:    Config.Server.Address,
-			Handler: router,
-		}
+		go func() {
+			var server http.Server = http.Server{
+				Addr:              Config.Server.Address,
+				Handler:           router,
+				ReadTimeout:       0,
+				ReadHeaderTimeout: 0,
+				WriteTimeout:      0,
+				IdleTimeout:       0,
+			}
 
-		print("Started HTTP api on " + server.Addr)
-		var err = server.ListenAndServe()
-		if err != nil {
-			print("Failed to start HTTP api.")
-		}
+			print("Started HTTP api on " + server.Addr)
+			var err = server.ListenAndServe()
+			if err != nil {
+				print("Failed to start HTTP api.")
+			}
+		}()
 	}
 }
 
