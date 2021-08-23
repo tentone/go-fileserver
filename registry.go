@@ -11,8 +11,9 @@ func RegistryDatabaseMigrate() {
 
 // Declaration of the routes available in the API
 var routes []Route = []Route{
-	{"GET", "/v1/resource/get/{library}/{uuid}", ResourceGet},
-	{"POST", "/v1/resource/upload", ResourceUpload},
+	{"GET", "/version", VersionGetAPI},
+	{"GET", "/v1/resource/get/{library}/{uuid}", ResourceGetAPI},
+	{"POST", "/v1/resource/upload", ResourceUploadAPI},
 }
 
 // Create a mux router object to api the API

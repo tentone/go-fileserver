@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"net/http"
 	"os"
 )
 
@@ -37,4 +38,19 @@ func LoadVersion(path string) {
 	}
 
 	print("Loaded version file.")
+}
+
+// Get the server instance version information, provides a timestamp of the build.
+func VersionGetAPI(writer http.ResponseWriter, request *http.Request) {
+	var data []byte
+	var err error
+	data, err = json.Marshal(&Version)
+	if err != nil {
+		print(writer, request, "Failed to marshal JSON response.", http.StatusBadRequest, err)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	_, _ = writer.Write(data)
 }
