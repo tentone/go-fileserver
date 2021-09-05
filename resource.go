@@ -73,7 +73,7 @@ func GetResourceByUuidDB(db *gorm.DB, uuid string) (a *Resource, e error) {
 }
 
 // Get a resource from the api
-func ResourceGet(writer http.ResponseWriter, request *http.Request) {
+func ResourceGetAPI(writer http.ResponseWriter, request *http.Request) {
 	// Form data
 	var variables = mux.Vars(request)
 	var library string = variables["library"]
@@ -102,7 +102,7 @@ func ResourceGet(writer http.ResponseWriter, request *http.Request) {
 }
 
 // Upload a new resource to the api.
-func ResourceUpload(writer http.ResponseWriter, request *http.Request) {
+func ResourceUploadAPI(writer http.ResponseWriter, request *http.Request) {
 	var uuid = request.FormValue("uuid")
 	var library = request.FormValue("library")
 	var format = request.FormValue("format")

@@ -12,8 +12,8 @@
     "height": 10
   },
   "dependencies": {
-    "express": "",
-    "express-fileupload": "",
-    "nwjs": ""
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "nwjs": "^1.4.4"
   }
 }
