@@ -7,19 +7,20 @@ import (
 	"os"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
 )
 
 type Resource struct {
-	gorm.Model
+	Model
 
 	// Library where the resource belongs
 	Library   Library `gorm:"foreignKey:id;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	LibraryID uint    `gorm:"column:library_id"`
 
 	// UUID of the resource
-	UUID string `gorm:"type:varchar(36)unique;column:uuid" json:"uuid"`
+	UUID uuid.UUID `gorm:"type:varchar(36)unique;column:uuid" json:"uuid"`
 
 	// File encoding format (e.g. png, jpeg, mp3, wav, mp4)
 	Format string `gorm:"column:format" json:"format"`
@@ -32,7 +33,7 @@ func ResourceMigrate(db *gorm.DB) {
 	}
 }
 
-func NewResource(uuid string, format string) *Resource {
+func NewResource(uuid uuid.UUID, format string) *Resource {
 	return &Resource{
 		UUID:   uuid,
 		Format: format,

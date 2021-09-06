@@ -6,7 +6,7 @@ import "gorm.io/gorm"
 //
 // Libraries can have tasks associated with them used to process resources.
 type Library struct {
-	gorm.Model
+	Model
 
 	// Path of the library, unique used to describe the library
 	//
