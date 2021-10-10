@@ -6,21 +6,22 @@
 
 ### Setup
 
-- Download and install go on your computer, prepare a configuration file.
+- Download and install [go](https://golang.org/) on your computer, prepare a configuration file.
+- Install gcc compiler (on window install [mingw](https://community.chocolatey.org/packages/mingw) using [chocolatey](https://chocolatey.org/))
 - The configuration file contains all the parameters necessary to run the server.
 - Run the server code.
 
 
+
+
 ### TODO
- - Convert images (png, jpeg, gif, etc)
+ - Convert images (png, jpeg, gif, etc). Image Converter: https://github.com/sunshineplan/imgconv
  - Process images (resize, rotate, crop, etc) 
- - Convert audio (mp3, wav, ogg, etc)
+ - Convert audio (mp3, wav, ogg, etc). Beep Audio Lib: https://github.com/faiface/beep
  - Convert text files (xml, json, etc)
+ - Get multiple resources in package (zip)
 
 
-### References
- - Image Converter: https://github.com/sunshineplan/imgconv
- - Beep Audio Lib: https://github.com/faiface/beep
 
 
 ### Usage
@@ -81,6 +82,8 @@
 | 200  x 0.001 Mb  | 2888                      | 19448                    |
 | 20  x 0.01 Mb    | 1731                      | 3050                     |
 | 20  x 0.1 Mb     | 11220                     | 12491                    |
+
+
 
 ### License
 
