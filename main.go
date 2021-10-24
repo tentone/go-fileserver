@@ -2,9 +2,8 @@ package main
 
 func main() {
 	LoadVersion("version.json")
-	LoadConfig("config.json")
-
-	ConnectDatabase()
+	_ = LoadConfig("config.json")
+	_ = ConnectDatabase()
 	RegistryDatabaseMigrate()
 
 	StartHTTPServer()
